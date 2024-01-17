@@ -1,4 +1,4 @@
-# 579-Project-Group5
+# EE579 ADVANCED MICROCONTROLLER PROJECT
 
 Build a vehicle capable of playing a game of skittles in the corridor outside RC6.41. 
 Two teams' vehicles will compete simultaneously, with a single set of 2 black metal 
