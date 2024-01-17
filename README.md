@@ -5,6 +5,7 @@ Two teams' vehicles will compete simultaneously, with a single set of 2 black me
 “skittles” placed between 6 and 10 metres from both vehicles, and both vehicles 
 beginning adjacent to each other. The skittles will consist of two tin soup cans 
 soldered end to end and painted. 
+
 You will be given a model car to modify. You are expected to retro-fit this vehicle to 
 operate autonomously, without altering the chassis (in particular, the wheel positions 
 or bearings) or the drive train of the vehicle. Teams will be given two runs, alongside 
@@ -14,15 +15,20 @@ until they knock over the skittle, or two minutes per skittle if they do not kno
 the skittle. The object is to get the lowest score in a round, and the lowest score from 
 the two rounds will be counted. The top four teams will compete in a semi-final and 
 the final two in the final. 
+
 In addition to two black skittles there will be a white skittle. Knocking over the white 
 skittle will result in disqualification from the round. 
+
  Teams will see the position of the skittles one minute prior to the start of a 
 round. 
+
  The vehicle must operate autonomously. No external control may be given to 
 the vehicle after it has been started. 
+
  For the purposes of adjudicating a tie, the vehicle displacement from the start 
 line at the end of the round will be measured, with longer distances scoring 
 higher. 
+
 Marks for the project will be calculated on a group basis. The design and construction 
 of the device will be marked out of 300. The team scoring the shortest time (or 
 greatest displacement, should no team finish), will be given at additional 30 bonus 
