@@ -9,8 +9,8 @@ You will be given a model car to modify. You are expected to retro-fit this vehi
 
 In addition to two black skittles there will be a white skittle. Knocking over the white skittle will result in disqualification from the round.
 + Teams will see the position of the skittles one minute prior to the start of a round.
-+The vehicle must operate autonomously. No external control may be given to the vehicle after it has been started.
-+For the purposes of adjudicating a tie, the vehicle displacement from the start line at the end of the round will be measured, with longer distances scoring higher.
+- The vehicle must operate autonomously. No external control may be given to the vehicle after it has been started.
+- For the purposes of adjudicating a tie, the vehicle displacement from the start line at the end of the round will be measured, with longer distances scoring higher.
 
 Marks for the project will be calculated on a group basis. The design and construction of the device will be marked out of 300. The team scoring the shortest time (or greatest displacement, should no team finish), will be given at additional 30 bonus marks. The group coming second will get 15 additional marks.
 
