@@ -17,11 +17,9 @@
 #include "esp_wifi.h"
 #include "esp_event.h"
 #include "nvs_flash.h"
-#include "lwip/err.h"
 #include "lwip/sys.h"
 #include "driver/gpio.h"
 
-#include "esp_err.h"
 #include <sys/param.h>
 #include "esp_netif.h"
 #include <esp_http_server.h>
@@ -165,8 +163,8 @@ void wifi_init_softap(void){
 
     wifi_config_t wifi_config = {
         .ap = {
-            .ssid = "skittles_telemetry_g5",
-            .ssid_len = strlen("skittles_telemetry_g5"),
+            .ssid = "SKITTLES TELEMETRY G5",
+            .ssid_len = strlen("SKITTLES TELEMETRY G5"),
             .channel = 1,
             .authmode = WIFI_AUTH_OPEN,
             .max_connection = 4,
@@ -179,8 +177,6 @@ void wifi_init_softap(void){
     esp_wifi_set_config(WIFI_IF_AP, &wifi_config);
     esp_wifi_start();
 }
-
-
 
 void app_main(void){
 	static httpd_handle_t server = NULL;
