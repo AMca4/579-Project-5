@@ -1,14 +1,12 @@
-/* 
- * Skittles AP code for telemetry
- * based on the esp-idf example code for soft AP and http server 
- * removed extra features and logging to make it more lightweight
+/* 579 Skittles Autonomous Car Project G5
+ *
+ * Web Server App
  * 
- * last modified: 04/02/24
+ * Web Server code that will be used primarily for debugging and telemetry data gathering/analysis.
+ *
+ * Andrew McAllister
  * 
- * Michail Kasmeridis 
- * 
- * EE579 G5
-*/
+ */
 
 #include <string.h>
 #include "freertos/FreeRTOS.h"
@@ -17,11 +15,9 @@
 #include "esp_wifi.h"
 #include "esp_event.h"
 #include "nvs_flash.h"
-#include "lwip/err.h"
 #include "lwip/sys.h"
 #include "driver/gpio.h"
 
-#include "esp_err.h"
 #include <sys/param.h>
 #include "esp_netif.h"
 #include <esp_http_server.h>
@@ -35,67 +31,278 @@ static esp_err_t telemetry_handler(httpd_req_t *req){
 	return error;
 }
 
-static const httpd_uri_t root = {
+static const httpd_uri_t liveTelemetryPage = {
+    .uri       = "/liveTelemetry",
+    .method    = HTTP_GET,
+    .handler   = telemetry_handler,
+    .user_ctx  = "<!DOCTYPE html>\
+<html>\
+\
+<body>\
+\
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\
+<style>\
+body {\
+  font-family: \"Lato\", sans-serif;\
+}\
+\
+.sidenav {\
+  height: 100%;\
+  width: 0;\
+  position: fixed;\
+  z-index: 1;\
+  top: 0;\
+  left: 0;\
+  background-color: #111;\
+  overflow-x: hidden;\
+  transition: 0.5s;\
+  padding-top: 60px;\
+}\
+\
+.sidenav a {\
+  padding: 8px 8px 8px 32px;\
+  text-decoration: none;\
+  font-size: 25px;\
+  color: #818181;\
+  display: block;\
+  transition: 0.3s;\
+}\
+\
+.sidenav a:hover {\
+  color: #f1f1f1;\
+}\
+\
+.sidenav .closebtn {\
+  position: absolute;\
+  top: 0;\
+  right: 25px;\
+  font-size: 36px;\
+  margin-left: 50px;\
+}\
+\
+@media screen and (max-height: 450px) {\
+  .sidenav {padding-top: 15px;}\
+  .sidenav a {font-size: 18px;}\
+}\
+</style>\
+</head>\
+<body>\
+\
+<div id=\"mySidenav\" class=\"sidenav\">\
+  <a href=\"javascript:void(0)\" class=\"closebtn\" onclick=\"closeNav()\">&times;</a>\
+  <a href=\"/\">Home</a>\
+  <a href=\"/liveTelemetry\">Live Telemetry</a>\
+  <a href=\"/config\">Configuration</a>\
+\
+</div>\
+<span style=\"font-size:30px;cursor:pointer\" onclick=\"openNav()\">&#9776;Skittles Autonomous Car App</span>\
+\
+<h1>Live Telemetry Data</h1>\
+\
+<script>\
+function openNav() {\
+  document.getElementById(\"mySidenav\").style.width = \"250px\";\
+}\
+\
+function closeNav() {\
+  document.getElementById(\"mySidenav\").style.width = \"0\";\
+}\
+</script>\
+\
+<h3>Sensor Selection</h3>\
+<form action=\"/action_page.php\">\
+    <input type=\"checkbox\" id=\"SensorA\" name=\"SensorA\" value=\"Ultrasonic\">\
+    <label for=\"SensorA\"> Ultrasonic A</label><br>\
+    <input type=\"checkbox\" id=\"SensorB\" name=\"SensorB\" value=\"Ultrasonic\">\
+    <label for=\"SensorB\"> Ultrasonic B</label><br>\
+    <input type=\"checkbox\" id=\"SensorC\" name=\"SensorC\" value=\"InfraRed\">\
+    <label for=\"SensorC\"> InfraRed A</label><br>\
+    <input type=\"checkbox\" id=\"SensorD\" name=\"SensorD\" value=\"InfraRed\">\
+    <label for=\"SensorD\"> InfraRed B</label><br>\
+    <input type=\"submit\" value=\"Display Data\">\
+</form>\
+\
+<div class=\"container\">\
+  <center>\
+      <svg\ 
+      xmlns=\"http://www.w3.org/2000/svg\"\ 
+      width=\"7em\"\
+      style=\"top:50%\"\
+      margin= auto\
+      display=flex\
+      viewBox=\"0 0 15 15\">\
+    <path fill=#3444db d=\"M13.84 6.852L12.6 5.7l-1.1-2.2a1.05 1.05 0 0 0-.9-.5H4.4a1.05 1.05 0 0 0-.9.5L2.4 5.7L1.16 6.852a.5.5 0 0 0-.16.367V11.5a.5.5 0 0 0 .5.5h2c.2 0 .5-.2.5-.4V11h7v.5c0 .2.2.5.4.5h2.1a.5.5 0 0 0 .5-.5V7.219a.5.5 0 0 0-.16-.367M4.5 4h6l1 2h-8ZM5 8.6c0 .2-.3.4-.5.4H2.4c-.2 0-.4-.3-.4-.5V7.4c.1-.3.3-.5.6-.4l2 .4c.2 0 .4.3.4.5Zm8-.1c0 .2-.2.5-.4.5h-2.1c-.2 0-.5-.2-.5-.4v-.7c0-.2.2-.5.4-.5l2-.4c.3-.1.5.1.6.4Z\" />\
+  </svg>\
+  </center>\
+  </div>\
+</body>\
+</html>"
+};
+
+static const httpd_uri_t homePage = {
     .uri       = "/",
     .method    = HTTP_GET,
     .handler   = telemetry_handler,
     .user_ctx  = "<!DOCTYPE html>\
-<html lang=\"en\">\
-<head>\
-    <meta charset=\"UTF-8\">\
-    <meta name=\"viewport\" content=\"width=device-width, height=device-height, initial-scale=1.0\">\
-    <title>Skittles Telemetry G5</title>\
-    <center>\
-    <h1>Skittles Telemetry G5</h1>\
-    </center>\
-    <style>\
-        body {\
-            display: flex;\
-            flex-direction: column;\
-            align-items: center;\
-            min-height: 100vh;\
-            margin: auto;\
-            background: #333; \
-            color: #fff; \
-        }\
-        .container {\
-        	display : table;\
-            height:200vh;\
-            position: flex;\
-            text-align: center;\
-            margin-top: 200px; \
-        }\
-        .textbox {\
-            position: absolute;\
-            width: 100px;\
-            height: 15px;\
-            text-align: center;\
-            background: white; \
-            border: 15px solid #00000; \
-            border-radius: 25px; \
-            padding: 5px; \
-        }\
-        }\
-    </style>\
+<html>\
+\
+<body>\
+\
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\
+<style>\
+body {\
+  font-family: \"Lato\", sans-serif;\
+}\
+\
+.sidenav {\
+  height: 100%;\
+  width: 0;\
+  position: fixed;\
+  z-index: 1;\
+  top: 0;\
+  left: 0;\
+  background-color: #111;\
+  overflow-x: hidden;\
+  transition: 0.5s;\
+  padding-top: 60px;\
+}\
+\
+.sidenav a {\
+  padding: 8px 8px 8px 32px;\
+  text-decoration: none;\
+  font-size: 25px;\
+  color: #818181;\
+  display: block;\
+  transition: 0.3s;\
+}\
+\
+.sidenav a:hover {\
+  color: #f1f1f1;\
+}\
+\
+.sidenav .closebtn {\
+  position: absolute;\
+  top: 0;\
+  right: 25px;\
+  font-size: 36px;\
+  margin-left: 50px;\
+}\
+\
+@media screen and (max-height: 450px) {\
+  .sidenav {padding-top: 15px;}\
+  .sidenav a {font-size: 18px;}\
+}\
+</style>\
 </head>\
 <body>\
-<div class=\"container\">\
-<center>\
-    <svg \
-    xmlns=\"http://www.w3.org/2000/svg\" \
-    width=\"7em\"\
-    style=\"top:50%\"\
-    margin= auto\
-    display=flex\
-    viewBox=\"0 0 15 15\">\
-	<path fill=#3444db d=\"M13.84 6.852L12.6 5.7l-1.1-2.2a1.05 1.05 0 0 0-.9-.5H4.4a1.05 1.05 0 0 0-.9.5L2.4 5.7L1.16 6.852a.5.5 0 0 0-.16.367V11.5a.5.5 0 0 0 .5.5h2c.2 0 .5-.2.5-.4V11h7v.5c0 .2.2.5.4.5h2.1a.5.5 0 0 0 .5-.5V7.219a.5.5 0 0 0-.16-.367M4.5 4h6l1 2h-8ZM5 8.6c0 .2-.3.4-.5.4H2.4c-.2 0-.4-.3-.4-.5V7.4c.1-.3.3-.5.6-.4l2 .4c.2 0 .4.3.4.5Zm8-.1c0 .2-.2.5-.4.5h-2.1c-.2 0-.5-.2-.5-.4v-.7c0-.2.2-.5.4-.5l2-.4c.3-.1.5.1.6.4Z\" />\
-</svg>\
-    <input type=\"text\" class=\"textbox top\" placeholder=\"Front\" style=\"top:20%; left: 50%;\" margin=auto display= flex>\
-    <input type=\"text\" class=\"textbox bottom\" placeholder=\"Back\" style=\"top: 80%; left: 50%;\" margin=auto display= flex>\
-    <input type=\"text\" class=\"textbox left\" placeholder=\"Left\" style=\"left: 20%; top:50%;\"  margin=auto display= flex>\
-    <input type=\"text\" class=\"textbox right\" placeholder=\"Right\" style=\"left: 80%; top:50%;\" margin=flex>\
-</center>\
+\
+<div id=\"mySidenav\" class=\"sidenav\">\
+  <a href=\"javascript:void(0)\" class=\"closebtn\" onclick=\"closeNav()\">&times;</a>\
+  <a href=\"/s\">Home</a>\
+  <a href=\"/liveTelemetry\">Live Telemetry</a>\
+  <a href=\"/config\">Configuration</a>\
+\
 </div>\
+<span style=\"font-size:30px;cursor:pointer\" onclick=\"openNav()\">&#9776;Skittles Autonomous Car App</span>\
+\
+<h1>Home Page</h1>\
+\
+<script>\
+function openNav() {\
+  document.getElementById(\"mySidenav\").style.width = \"250px\";\
+}\
+\
+function closeNav() {\
+  document.getElementById(\"mySidenav\").style.width = \"0\";\
+}\
+</script>\
+\
+<p> Welcome to the hompage of Group 5's Telemtry Data Application. This server contains useful tools in order to debug, perform data analysis and troubleshoot\
+ potential errors with the Skittles Autonomous Car Project! </p>\
+</body>\
+</html>"
+};
+
+static const httpd_uri_t configPage = {
+    .uri       = "/config",
+    .method    = HTTP_GET,
+    .handler   = telemetry_handler,
+    .user_ctx  = "<!DOCTYPE html>\
+<html>\
+\
+<body>\
+\
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\
+<style>\
+body {\
+  font-family: \"Lato\", sans-serif;\
+}\
+\
+.sidenav {\
+  height: 100%;\
+  width: 0;\
+  position: fixed;\
+  z-index: 1;\
+  top: 0;\
+  left: 0;\
+  background-color: #111;\
+  overflow-x: hidden;\
+  transition: 0.5s;\
+  padding-top: 60px;\
+}\
+\
+.sidenav a {\
+  padding: 8px 8px 8px 32px;\
+  text-decoration: none;\
+  font-size: 25px;\
+  color: #818181;\
+  display: block;\
+  transition: 0.3s;\
+}\
+\
+.sidenav a:hover {\
+  color: #f1f1f1;\
+}\
+\
+.sidenav .closebtn {\
+  position: absolute;\
+  top: 0;\
+  right: 25px;\
+  font-size: 36px;\
+  margin-left: 50px;\
+}\
+\
+@media screen and (max-height: 450px) {\
+  .sidenav {padding-top: 15px;}\
+  .sidenav a {font-size: 18px;}\
+}\
+</style>\
+</head>\
+<body>\
+\
+<div id=\"mySidenav\" class=\"sidenav\">\
+  <a href=\"javascript:void(0)\" class=\"closebtn\" onclick=\"closeNav()\">&times;</a>\
+  <a href=\"/\">Home</a>\
+  <a href=\"/liveTelemetry\">Live Telemetry</a>\
+  <a href=\"/config\">Configuration</a>\
+\
+</div>\
+<span style=\"font-size:30px;cursor:pointer\" onclick=\"openNav()\">&#9776;Skittles Autonomous Car App</span>\
+\
+<h1>Configuration Page</h1>\
+\
+<script>\
+function openNav() {\
+  document.getElementById(\"mySidenav\").style.width = \"250px\";\
+}\
+\
+function closeNav() {\
+  document.getElementById(\"mySidenav\").style.width = \"0\";\
+}\
+</script>\
+\
+<p> Welcome to the Configuration page! This page contains important information regarding the Skittles Autonomous Car\
+ parts, diagrams and construction.</p>\
 </body>\
 </html>"
 };
@@ -113,7 +320,9 @@ static httpd_handle_t start_webserver(void){
 
     // Start the httpd server
     if (httpd_start(&server, &config) == ESP_OK) {
-        httpd_register_uri_handler(server, &root);
+        httpd_register_uri_handler(server, &liveTelemetryPage);
+        httpd_register_uri_handler(server, &homePage);
+        httpd_register_uri_handler(server, &configPage);
         return server;
     }
     return NULL;
@@ -165,8 +374,8 @@ void wifi_init_softap(void){
 
     wifi_config_t wifi_config = {
         .ap = {
-            .ssid = "skittles_telemetry_g5",
-            .ssid_len = strlen("skittles_telemetry_g5"),
+            .ssid = "SKITTLES TELEMETRY G5",
+            .ssid_len = strlen("SKITTLES TELEMETRY G5"),
             .channel = 1,
             .authmode = WIFI_AUTH_OPEN,
             .max_connection = 4,
@@ -180,10 +389,9 @@ void wifi_init_softap(void){
     esp_wifi_start();
 }
 
-
-
 void app_main(void){
 	static httpd_handle_t server = NULL;
+    
     //Initialize NVS
     nvs_flash_init();
     wifi_init_softap();
