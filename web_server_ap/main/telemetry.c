@@ -22,6 +22,14 @@
 #include "esp_netif.h"
 #include <esp_http_server.h>
 
+#include <stdio.h>
+#include "freertos/timers.h"
+#include "freertos/event_groups.h"
+#include "esp_log.h"
+#include "esp_http_server.h"
+
+static const char *TAG = "ESP32 Server";
+
 #define LED GPIO_NUM_2
 
 static esp_err_t telemetry_handler(httpd_req_t *req){
@@ -31,11 +39,45 @@ static esp_err_t telemetry_handler(httpd_req_t *req){
 	return error;
 }
 
-static const httpd_uri_t liveTelemetryPage = {
-    .uri       = "/liveTelemetry",
-    .method    = HTTP_GET,
-    .handler   = telemetry_handler,
-    .user_ctx  = "<!DOCTYPE html>\
+static esp_err_t homePage_handler(httpd_req_t *req){
+	esp_err_t error;
+	const char *response = (const char *) req->user_ctx;
+	error = httpd_resp_send(req, response, strlen(response));
+	return error;
+}
+
+static esp_err_t configPage_handler(httpd_req_t *req){
+	esp_err_t error;
+	const char *response = (const char *) req->user_ctx;
+	error = httpd_resp_send(req, response, strlen(response));
+	return error;
+}
+
+
+esp_err_t liveTelemetryIgnitionPage_handler(httpd_req_t *req)
+{
+    esp_err_t error;
+	const char *response = (const char *) req->user_ctx;
+	error = httpd_resp_send(req, response, strlen(response));
+	return error;
+    
+}
+
+esp_err_t killWebserverPage_handler(httpd_req_t *req)
+{
+    esp_err_t error;
+    esp_err_t httpd_stop(httpd_handle_t handle);
+	const char *response = (const char *) req->user_ctx;
+	error = httpd_resp_send(req, response, strlen(response));
+	return error;
+    
+}
+
+httpd_uri_t liveTelemetryIgnitionPage = {
+    .uri = "/liveTelemetryIgnition",
+    .method = HTTP_GET,
+    .handler = liveTelemetryIgnitionPage_handler,
+    .user_ctx = "<!DOCTYPE html>\
 <html>\
 \
 <body>\
@@ -97,7 +139,7 @@ body {\
 </div>\
 <span style=\"font-size:30px;cursor:pointer\" onclick=\"openNav()\">&#9776;Skittles Autonomous Car App</span>\
 \
-<h1>Live Telemetry Data</h1>\
+<h1>Ignition Selection</h1>\
 \
 <script>\
 function openNav() {\
@@ -109,8 +151,118 @@ function closeNav() {\
 }\
 </script>\
 \
+<p> Select Ignition for car (with live telemetry or without live telemetry)</p>\
+\
+<form action=\"/liveTelemetry\">\
+<button type=\"submit\" value=\"Telemetry Ignition\">\
+</form>\
+<form action=\"/killWebserver\">\
+<button type=\"submit\" value=\"Raw Ignition\">\
+</form>\
+</body>\
+</html>"
+};
+
+
+
+static const httpd_uri_t liveTelemetryPage = {
+    .uri       = "/liveTelemetry",
+    .method    = HTTP_GET,
+    .handler   = telemetry_handler,
+    .user_ctx  = "<!DOCTYPE html>\
+<html>\
+\
+<body>\
+\
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\
+<style>\
+body {\
+  font-family: \"Lato\", sans-serif;\
+}\
+\
+.sidenav {\
+  height: 100%;\
+  width: 0;\
+  position: fixed;\
+  z-index: 1;\
+  top: 0;\
+  left: 0;\
+  background-color: #111;\
+  overflow-x: hidden;\
+  transition: 0.5s;\
+  padding-top: 60px;\
+}\
+\
+.sidenav a {\
+  padding: 8px 8px 8px 32px;\
+  text-decoration: none;\
+  font-size: 25px;\
+  color: #818181;\
+  display: block;\
+  transition: 0.3s;\
+}\
+\
+.sidenav a:hover {\
+  color: #f1f1f1;\
+}\
+\
+.sidenav .closebtn {\
+  position: absolute;\
+  top: 0;\
+  right: 25px;\
+  font-size: 36px;\
+  margin-left: 50px;\
+}\
+#myDIV {\
+  width: 100%;\
+  padding: 50px 0;\
+  text-align: center;\
+  background-color: lightblue;\
+  margin-top: 20px;\
+}\
+@media screen and (max-height: 450px) {\
+  .sidenav {padding-top: 15px;}\
+  .sidenav a {font-size: 18px;}\
+}\
+</style>\
+</head>\
+<body>\
+\
+<div id=\"mySidenav\" class=\"sidenav\">\
+  <a href=\"javascript:void(0)\" class=\"closebtn\" onclick=\"closeNav()\">&times;</a>\
+  <a href=\"/\">Home</a>\
+  <a href=\"/liveTelemetry\">Live Telemetry</a>\
+  <a href=\"/config\">Configuration</a>\
+\
+</div>\
+<span style=\"font-size:30px;cursor:pointer\" onclick=\"openNav()\">&#9776;Skittles Autonomous Car App</span>\
+\
+<h1>Live Telemetry Data</h1>\
+\
+<script>\
+function openNav() {\
+  document.getElementById(\"mySidenav\").style.width = \"250px\";\
+}\
+\
+function closeNav() {\
+  document.getElementById(\"mySidenav\").style.width = \"0\";\
+}\
+function displaySensorData() {\
+  var x = document.getElementById(\"myDIV\");\
+  if (x.style.display === \"none\") {\
+    x.style.display = \"block\";\
+  } else {\
+    x.style.display = \"none\";\
+  }\
+\
+function ignitionFunction() {\
+location.href = \"liveTelemetryIgnition\";\
+}\
+}\
+</script>\
+\
 <h3>Sensor Selection</h3>\
-<form action=\"/action_page.php\">\
+<form>\
     <input type=\"checkbox\" id=\"SensorA\" name=\"SensorA\" value=\"Ultrasonic\">\
     <label for=\"SensorA\"> Ultrasonic A</label><br>\
     <input type=\"checkbox\" id=\"SensorB\" name=\"SensorB\" value=\"Ultrasonic\">\
@@ -119,7 +271,7 @@ function closeNav() {\
     <label for=\"SensorC\"> InfraRed A</label><br>\
     <input type=\"checkbox\" id=\"SensorD\" name=\"SensorD\" value=\"InfraRed\">\
     <label for=\"SensorD\"> InfraRed B</label><br>\
-    <input type=\"submit\" value=\"Display Data\">\
+    <input type=\"submit\" value=\"Display Data\" onclick=\"displaySensorData()\">\
 </form>\
 \
 <div class=\"container\">\
@@ -131,10 +283,11 @@ function closeNav() {\
       margin= auto\
       display=flex\
       viewBox=\"0 0 15 15\">\
-    <path fill=#3444db d=\"M13.84 6.852L12.6 5.7l-1.1-2.2a1.05 1.05 0 0 0-.9-.5H4.4a1.05 1.05 0 0 0-.9.5L2.4 5.7L1.16 6.852a.5.5 0 0 0-.16.367V11.5a.5.5 0 0 0 .5.5h2c.2 0 .5-.2.5-.4V11h7v.5c0 .2.2.5.4.5h2.1a.5.5 0 0 0 .5-.5V7.219a.5.5 0 0 0-.16-.367M4.5 4h6l1 2h-8ZM5 8.6c0 .2-.3.4-.5.4H2.4c-.2 0-.4-.3-.4-.5V7.4c.1-.3.3-.5.6-.4l2 .4c.2 0 .4.3.4.5Zm8-.1c0 .2-.2.5-.4.5h-2.1c-.2 0-.5-.2-.5-.4v-.7c0-.2.2-.5.4-.5l2-.4c.3-.1.5.1.6.4Z\" />\
+      	<path fill=#3444db d=\"M13.84 6.852L12.6 5.7l-1.1-2.2a1.05 1.05 0 0 0-.9-.5H4.4a1.05 1.05 0 0 0-.9.5L2.4 5.7L1.16 6.852a.5.5 0 0 0-.16.367V11.5a.5.5 0 0 0 .5.5h2c.2 0 .5-.2.5-.4V11h7v.5c0 .2.2.5.4.5h2.1a.5.5 0 0 0 .5-.5V7.219a.5.5 0 0 0-.16-.367M4.5 4h6l1 2h-8ZM5 8.6c0 .2-.3.4-.5.4H2.4c-.2 0-.4-.3-.4-.5V7.4c.1-.3.3-.5.6-.4l2 .4c.2 0 .4.3.4.5Zm8-.1c0 .2-.2.5-.4.5h-2.1c-.2 0-.5-.2-.5-.4v-.7c0-.2.2-.5.4-.5l2-.4c.3-.1.5.1.6.4Z\" />\
   </svg>\
   </center>\
   </div>\
+  \
 </body>\
 </html>"
 };
@@ -142,7 +295,7 @@ function closeNav() {\
 static const httpd_uri_t homePage = {
     .uri       = "/",
     .method    = HTTP_GET,
-    .handler   = telemetry_handler,
+    .handler   = homePage_handler,
     .user_ctx  = "<!DOCTYPE html>\
 <html>\
 \
@@ -199,7 +352,7 @@ body {\
 <div id=\"mySidenav\" class=\"sidenav\">\
   <a href=\"javascript:void(0)\" class=\"closebtn\" onclick=\"closeNav()\">&times;</a>\
   <a href=\"/s\">Home</a>\
-  <a href=\"/liveTelemetry\">Live Telemetry</a>\
+  <a href=\"/liveTelemetryIgnition\">Live Telemetry</a>\
   <a href=\"/config\">Configuration</a>\
 \
 </div>\
@@ -226,7 +379,7 @@ function closeNav() {\
 static const httpd_uri_t configPage = {
     .uri       = "/config",
     .method    = HTTP_GET,
-    .handler   = telemetry_handler,
+    .handler   = configPage_handler,
     .user_ctx  = "<!DOCTYPE html>\
 <html>\
 \
@@ -283,7 +436,7 @@ body {\
 <div id=\"mySidenav\" class=\"sidenav\">\
   <a href=\"javascript:void(0)\" class=\"closebtn\" onclick=\"closeNav()\">&times;</a>\
   <a href=\"/\">Home</a>\
-  <a href=\"/liveTelemetry\">Live Telemetry</a>\
+  <a href=\"/liveTelemetryIgnition\">Live Telemetry</a>\
   <a href=\"/config\">Configuration</a>\
 \
 </div>\
@@ -307,22 +460,33 @@ function closeNav() {\
 </html>"
 };
 
+static const httpd_uri_t killWebserverPage = {
+    .uri       = "/killWebserver",
+    .method    = HTTP_GET,
+    .handler   = killWebserverPage_handler,
+    .user_ctx  = NULL
+    };
+
 esp_err_t http_404_error_handler(httpd_req_t *req, httpd_err_code_t err){
     /* For any other URI send 404 and close socket */
     httpd_resp_send_err(req, HTTPD_404_NOT_FOUND, "Some 404 error message");
     return ESP_FAIL;
 }
 
+// Function to start the webserver, setup configurations and register URI handler functions
+
 static httpd_handle_t start_webserver(void){
     httpd_handle_t server = NULL;
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
     config.lru_purge_enable = true;
 
-    // Start the httpd server
+    // 
     if (httpd_start(&server, &config) == ESP_OK) {
         httpd_register_uri_handler(server, &liveTelemetryPage);
         httpd_register_uri_handler(server, &homePage);
         httpd_register_uri_handler(server, &configPage);
+        httpd_register_uri_handler(server, &liveTelemetryIgnitionPage);
+        httpd_register_uri_handler(server, &killWebserverPage);
         return server;
     }
     return NULL;
