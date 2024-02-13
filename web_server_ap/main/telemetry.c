@@ -27,6 +27,7 @@
 #include "freertos/event_groups.h"
 #include "esp_log.h"
 #include "esp_http_server.h"
+#include "esp_err.h"
 
 static const char *TAG = "ESP32 Server";
 
@@ -54,9 +55,9 @@ static esp_err_t configPage_handler(httpd_req_t *req){
 }
 
 
-esp_err_t liveTelemetryIgnitionPage_handler(httpd_req_t *req)
+esp_err_t carIgnitionPage_handler(httpd_req_t *req)
 {
-    esp_err_t error;
+  esp_err_t error;
 	const char *response = (const char *) req->user_ctx;
 	error = httpd_resp_send(req, response, strlen(response));
 	return error;
@@ -65,18 +66,18 @@ esp_err_t liveTelemetryIgnitionPage_handler(httpd_req_t *req)
 
 esp_err_t killWebserverPage_handler(httpd_req_t *req)
 {
-    esp_err_t error;
-    esp_err_t httpd_stop(httpd_handle_t handle);
+  esp_err_t error;
+  esp_err_t httpd_stop(httpd_handle_t handle);
 	const char *response = (const char *) req->user_ctx;
 	error = httpd_resp_send(req, response, strlen(response));
 	return error;
     
 }
 
-httpd_uri_t liveTelemetryIgnitionPage = {
-    .uri = "/liveTelemetryIgnition",
+httpd_uri_t carIgnitionPage = {
+    .uri = "/carIgnition",
     .method = HTTP_GET,
-    .handler = liveTelemetryIgnitionPage_handler,
+    .handler = carIgnitionPage_handler,
     .user_ctx = "<!DOCTYPE html>\
 <html>\
 \
@@ -155,9 +156,13 @@ function closeNav() {\
 \
 <form action=\"/liveTelemetry\">\
 <button type=\"submit\" value=\"Telemetry Ignition\">\
+Live Telemetry Ignition\
+</button>\
 </form>\
 <form action=\"/killWebserver\">\
 <button type=\"submit\" value=\"Raw Ignition\">\
+Raw Ignition\
+</button>\
 </form>\
 </body>\
 </html>"
@@ -256,7 +261,7 @@ function displaySensorData() {\
   }\
 \
 function ignitionFunction() {\
-location.href = \"liveTelemetryIgnition\";\
+location.href = \"carIgnition\";\
 }\
 }\
 </script>\
@@ -352,7 +357,7 @@ body {\
 <div id=\"mySidenav\" class=\"sidenav\">\
   <a href=\"javascript:void(0)\" class=\"closebtn\" onclick=\"closeNav()\">&times;</a>\
   <a href=\"/s\">Home</a>\
-  <a href=\"/liveTelemetryIgnition\">Live Telemetry</a>\
+  <a href=\"/carIgnition\">Live Telemetry</a>\
   <a href=\"/config\">Configuration</a>\
 \
 </div>\
@@ -436,7 +441,7 @@ body {\
 <div id=\"mySidenav\" class=\"sidenav\">\
   <a href=\"javascript:void(0)\" class=\"closebtn\" onclick=\"closeNav()\">&times;</a>\
   <a href=\"/\">Home</a>\
-  <a href=\"/liveTelemetryIgnition\">Live Telemetry</a>\
+  <a href=\"/carIgnition\">Live Telemetry</a>\
   <a href=\"/config\">Configuration</a>\
 \
 </div>\
@@ -485,7 +490,7 @@ static httpd_handle_t start_webserver(void){
         httpd_register_uri_handler(server, &liveTelemetryPage);
         httpd_register_uri_handler(server, &homePage);
         httpd_register_uri_handler(server, &configPage);
-        httpd_register_uri_handler(server, &liveTelemetryIgnitionPage);
+        httpd_register_uri_handler(server, &carIgnitionPage);
         httpd_register_uri_handler(server, &killWebserverPage);
         return server;
     }
@@ -552,6 +557,7 @@ void wifi_init_softap(void){
     esp_wifi_set_config(WIFI_IF_AP, &wifi_config);
     esp_wifi_start();
 }
+
 
 void app_main(void){
 	static httpd_handle_t server = NULL;
