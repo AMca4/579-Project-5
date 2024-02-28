@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "i2c_slave.h": "c",
+        "format": "c",
+        "charconv": "c",
+        "xlocnum": "c",
+        "cstdio": "c",
+        "*.inc": "c",
+        "future": "c"
+    },
+    "idf.flashType": "UART"
+}
