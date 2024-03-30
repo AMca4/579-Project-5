@@ -1,6 +1,3 @@
-*testing/
-*ultrasonic/build/
-*web_server_ap/build/
-*accelerometer/build/
 *radar/build/
 *obsolete/
+*master_algorithm/build/

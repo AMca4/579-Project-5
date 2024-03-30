@@ -1,0 +1,13 @@
+{
+    "idf.adapterTargetName": "esp32",
+    "files.associations": {
+        "ets_sys.h": "c",
+        "iterator": "c",
+        "xutility": "c",
+        "freertos.h": "c",
+        "task.h": "c",
+        "ultrasonic.h": "c"
+    },
+    "idf.portWin": "COM7",
+    "idf.flashType": "UART"
+}
