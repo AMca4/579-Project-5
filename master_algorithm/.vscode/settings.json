@@ -6,8 +6,10 @@
         "xutility": "c",
         "freertos.h": "c",
         "task.h": "c",
-        "ultrasonic.h": "c"
+        "ultrasonic.h": "c",
+        "esp_err.h": "c"
     },
     "idf.portWin": "COM7",
-    "idf.flashType": "UART"
+    "idf.flashType": "UART",
+    "C_Cpp.errorSquiggles": "disabled"
 }

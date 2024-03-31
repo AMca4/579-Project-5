@@ -1,12 +1,10 @@
 #include <stdio.h>
-// #include <stdint.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/i2c.h"
 #include "driver/gpio.h"
 #include "accelerometer.h"
 
-#define LED GPIO_NUM_2
 #define I2C_MASTER_SCL_IO 22       
 #define I2C_MASTER_SDA_IO 21       
 #define I2C_MASTER_NUM I2C_NUM_0   
@@ -55,31 +53,30 @@ void adxl345_read_acceleration(int16_t *x, int16_t *y) {
     *y = (data[3] << 8) | data[2];
 }
 
-void app_main() {
-    i2c_master_init();
-    adxl345_init();
-    gpio_set_direction(LED, GPIO_MODE_OUTPUT);
-    int16_t x1, y1, x2, y2;
+// void app_main() {
 
-    while(1) {
-        adxl345_read_acceleration(&x1, &y1);
-        vTaskDelay(pdMS_TO_TICKS(150)); 
-        adxl345_read_acceleration(&x2, &y2);
-        if (((x2-x1) > 30) | ((x1-x2) > 30 )) {
-            gpio_set_level(LED, 1);
-            vTaskDelay(pdMS_TO_TICKS(200));
-            gpio_set_level(LED, 0);
-        }
-        else if(((y2-y1) > 30) | ((y1-y2) > 30)){
-            gpio_set_level(LED, 1);
-            vTaskDelay(pdMS_TO_TICKS(50));
-            gpio_set_level(LED, 0);
-            vTaskDelay(pdMS_TO_TICKS(50));
-            gpio_set_level(LED, 1);
-            vTaskDelay(pdMS_TO_TICKS(50));
-            gpio_set_level(LED, 0);
-        }
-        printf("X-axis: %d, Y-axis: %d\n", x2, y2);
-        vTaskDelay(pdMS_TO_TICKS(100)); 
-    }
-}
+    
+//     int16_t x1, y1, x2, y2;
+
+//     while(1) {
+//         adxl345_read_acceleration(&x1, &y1);
+//         vTaskDelay(pdMS_TO_TICKS(150)); 
+//         adxl345_read_acceleration(&x2, &y2);
+//         if (((x2-x1) > 30) | ((x1-x2) > 30 )) {
+//             gpio_set_level(LED, 1);
+//             vTaskDelay(pdMS_TO_TICKS(200));
+//             gpio_set_level(LED, 0);
+//         }
+//         else if(((y2-y1) > 30) | ((y1-y2) > 30)){
+//             gpio_set_level(LED, 1);
+//             vTaskDelay(pdMS_TO_TICKS(50));
+//             gpio_set_level(LED, 0);
+//             vTaskDelay(pdMS_TO_TICKS(50));
+//             gpio_set_level(LED, 1);
+//             vTaskDelay(pdMS_TO_TICKS(50));
+//             gpio_set_level(LED, 0);
+//         }
+//         printf("X-axis: %d, Y-axis: %d\n", x2, y2);
+//         vTaskDelay(pdMS_TO_TICKS(100)); 
+//     }
+// }

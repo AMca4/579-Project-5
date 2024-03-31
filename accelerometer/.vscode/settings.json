@@ -6,7 +6,11 @@
         "xlocnum": "c",
         "cstdio": "c",
         "*.inc": "c",
-        "future": "c"
+        "future": "c",
+        "compare": "cpp",
+        "cstdint": "cpp"
     },
-    "idf.flashType": "UART"
+    "idf.flashType": "UART",
+    "idf.portWin": "COM7",
+    "idf.adapterTargetName": "esp32"
 }
