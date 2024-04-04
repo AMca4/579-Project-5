@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "i2c_slave.h": "c",
+        "format": "c",
+        "charconv": "c",
+        "xlocnum": "c",
+        "cstdio": "c",
+        "*.inc": "c",
+        "future": "c",
+        "compare": "cpp",
+        "cstdint": "cpp"
+    },
+    "idf.flashType": "UART",
+    "idf.portWin": "COM7",
+    "idf.adapterTargetName": "esp32"
+}

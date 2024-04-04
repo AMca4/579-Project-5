@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+C:/579-Project-5/accelerometer/build/CMakeFiles/bootloader
+C:/579-Project-5/accelerometer/build/CMakeFiles/bootloader.rule
+C:/579-Project-5/accelerometer/build/CMakeFiles/bootloader-complete.rule
+C:/579-Project-5/accelerometer/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+C:/579-Project-5/accelerometer/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+C:/579-Project-5/accelerometer/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+C:/579-Project-5/accelerometer/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+C:/579-Project-5/accelerometer/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+C:/579-Project-5/accelerometer/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+C:/579-Project-5/accelerometer/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
