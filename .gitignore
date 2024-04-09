@@ -1,3 +1,5 @@
 *.md
 *.xlsx
 *.docx
+*.obsolete
+*/master_algorithm/build
