@@ -1,0 +1,7 @@
+CMake Error at C:/Espressif/tools/cmake/3.24.0/share/cmake-3.24/Modules/CMakeDetermineCCompiler.cmake:226 (configure_file):
+  No such file or directory
+Call Stack (most recent call first):
+  C:/Espressif/frameworks/esp-idf-v5.2-2/tools/cmake/project.cmake:506 (__project)
+  CMakeLists.txt:8 (project)
+
+
