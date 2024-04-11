@@ -49,3 +49,9 @@ We have used VS code for building this project. The following are the instructio
 - Step 13: Choose *USE EXISTING SETUP* and then your installation should appear. Clicking on it, will install the necessary libraries for VS code to communicate with the ESP-IDF tools and once instructed you may close the window. You can skip to step 15.
 - Step 14: If your installation doesn't appear, choose *Search ESP-IDF in system* and select the download server (*github if you followed our instructions above*) and *Find ESP-IDF in your system* from the dropdown. Now specify the locations for the *ESP-IDF* and the *IDF_TOOLS_PATH* from step 8 and click on install. Wait for it to finish and once instructed you may close the window.
 - Step 15: Congratulations! You have successfully set-up *ESP-IDF* in your system!
+
+### MacOS Setup:
+- Follow the steps listed [here](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/linux-macos-setup.html).
+
+### Linux Setup:
+- Follow the steps listed [here](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/linux-macos-setup.html).
