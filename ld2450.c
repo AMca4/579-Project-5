@@ -168,15 +168,11 @@ void readline(int readch, char *buffer, int len) {
       printf("\nBuffer = ");
       for(int i=0; i<len; i++)
         printf("%c ", buffer[i]);
-      if (pos >= 4) {
-        if (buffer[pos - 2] == 0x55 && buffer[pos - 1] == 0xCC) {
+      if ((buffer[pos - 2] == 0x55 && buffer[pos - 1] == 0xCC) && pos > 29) {
           handlePeriodicData(buffer, pos);
           pos = 0;  // Reset position index ready for next time
-        } else if (buffer[pos - 4] == 0x04 && buffer[pos - 3] == 0x03 && buffer[pos - 2] == 0x02 && buffer[pos - 1] == 0x01) {
-          handleACKData(buffer, pos);
-          pos = 0;  // Reset position index ready for next time
-        }
-      }
+      } 
+      
     }
     return;
 }
