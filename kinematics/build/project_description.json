@@ -1,7 +1,7 @@
 {
     "version":            "1.1",
     "project_name":       "kinematics",
-    "project_version":    "55e2e50",
+    "project_version":    "bb160d7-dirty",
     "project_path":       "C:/579-Project-5/kinematics",
     "idf_path":           "C:/Espressif/frameworks/esp-idf-v5.2-2",
     "build_dir":          "C:/579-Project-5/kinematics/build",

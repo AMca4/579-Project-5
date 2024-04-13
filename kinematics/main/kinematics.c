@@ -1,46 +1,48 @@
 #include "include/kinematics.h"
 
-#define forward_pin GPIO_NUM_32
-#define reverse_pin GPIO_NUM_33;
-#define fast_freq 10000;
-#define normal_freq 7500;
-#define slow_freq 5000;
-#define tyre_circumference 89.5354;
+#define forward_pin 33
+#define reverse_pin 32
+#define tyre_circumference 0.0895354
 
-struct pwm_details{
-    int32_t frequency;
-    float duty_cycle;
-    gpio_num_t pin;
-    float duration;
-};
+void motor_innit(){
+    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, forward_pin);
+    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0B, reverse_pin);
+    mcpwm_config_t pwm_config;
+    pwm_config.frequency = 40000;    // Set frequency in Hz
+    pwm_config.cmpr_a = 0;           // Initial duty cycle of 0%
+    pwm_config.cmpr_b = 0;           // Initial duty cycle of 0%
+    pwm_config.counter_mode = MCPWM_UP_DOWN_COUNTER;
+    // pwm_config.duty_mode =  MCPWM_DUTY_MODE_0;
+    pwm_config.duty_mode = MCPWM_DUTY_MODE_1;
+    mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);
+}
 
 void forward(float meters) {
-    struct pwm_details pwm_slow_forward;
-    pwm_slow_forward.duty_cycle = 0.5;         // gives an output voltage of 2.5 V
-    pwm_slow_forward.frequency = slow_freq;
-    pwm_slow_forward.pin = forward_pin;
-    pwm_slow_forward.duration = meters / tyre_circumference;
-    // pass this struct to a pwm function ig
+    mcpwm_set_signal_low(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B);
+    mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 60);
+    mcpwm_set_duty_type(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, MCPWM_DUTY_MODE_0);
+    float duration = meters*100 / tyre_circumference;
+    vTaskDelay(pdMS_TO_TICKS(duration));
+    
 }
 
 void fast_forward(float meters){
-    struct pwm_details pwm_fast_forward;
-    pwm_fast_forward.duty_cycle = 0.8;
-    pwm_fast_forward.frequency = fast_freq;
-    pwm_fast_forward.pin = forward_pin;
-    pwm_fast_forward.duration = meters / tyre_circumference;
-    // pass this struct to a pwm function ig
+    mcpwm_set_signal_low(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B);
+    mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, 70);
+    mcpwm_set_duty_type(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A, MCPWM_DUTY_MODE_0);
+    float duration = meters*100 / tyre_circumference;
+    vTaskDelay(pdMS_TO_TICKS(duration));
 }
 
 void reverse(float meters){
-    struct pwm_details pwm_reverse;
-    pwm_reverse.duty_cycle = 0.64;         // gives an output voltage of 3.2 V
-    pwm_reverse.frequency = normal_freq;
-    pwm_reverse.pin = reverse_pin;
-    pwm_reverse.duration = meters / tyre_circumference;
-    // pass this struct to a pwm function ig
+    mcpwm_set_signal_low(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A);
+    mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, 60);
+    mcpwm_set_duty_type(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, MCPWM_DUTY_MODE_0);
+    float duration = meters*100 / tyre_circumference;
+    vTaskDelay(pdMS_TO_TICKS(duration));
 }
 
 void brake(){
-    // don't know how to code that bruva 
+    mcpwm_set_signal_low(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A);
+    mcpwm_set_signal_low(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B);
 }
