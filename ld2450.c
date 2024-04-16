@@ -158,13 +158,13 @@ void handlePeriodicData(char *buffer, int length) {
 void readline(int readch, char *buffer, int length) {
     printf("\n******\tExecuting Readline FUNCTION\t*****\n");
     static int position;
-    printf("\nPosition = %d", pos);
+    printf("\nPosition = %d", position);
     if (readch >= 0) {
       if (position < len - 1) {
         buffer[position++] = readch;
         buffer[position] = 0;
       } else {
-        pos = 0;
+        position = 0;
       }
       printf("\nBuffer = ");
       for(int i=0; i<length; i++)
