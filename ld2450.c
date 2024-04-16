@@ -43,24 +43,24 @@ static const char *TAG = "UART TEST";
 
 #define BUF_SIZE (1024)
 
-uint32_t lastPeriodicMillis = millis();
+uint32_t lastTime = millis();
 
-uint16_t twoByteToUint(char firstByte, char secondByte) {
-    return (uint16_t)(secondByte << 8) + firstByte;
+uint16_t twoByteToUint(char first, char second) {
+    return (uint16_t)(second << 8) + first;
 }
 
-int16_t twoByteToInt(char firstByte, char secondByte) {
-    return (int16_t)(secondByte << 8) | firstByte;
+int16_t twoByteToInt(char first, char second) {
+    return (int16_t)(second << 8) | first;
 }
 
-void reportTargetInfo(int target, char *raw) {
+void reportTargetInfo(int object, char *raw) {
     printf("\n*****\tExecuting Report Target Information\t*****\n");
     int16_t newX, newY, newSpeed;
     uint16_t newResolution;
 
     ESP_LOGV(TAG, "Will reporting taget %d", target);
 
-    switch (target) {
+    switch (object) {
       case 0:
         newX = twoByteToUint(raw[0], raw[1] & 0x7F);
         printf("\nNewX = %d", newX);
@@ -132,9 +132,9 @@ void reportTargetInfo(int target, char *raw) {
     }
 }
 
-void handlePeriodicData(char *buffer, int len) {
+void handlePeriodicData(char *buffer, int length) {
     printf("\n******\tExecuting Handling periodic data Function\t*****\n");
-    if (len < 29)
+    if (length < 29)
       return;  // 4 frame start bytes + 2 length bytes + 1 data end byte + 1 crc byte + 4 frame end bytes
     if (buffer[0] != 0xAA || buffer[1] != 0xFF || buffer[2] != 0x03 || buffer[3] != 0x00)
       return;  // check 4 frame start bytes
@@ -149,30 +149,29 @@ void handlePeriodicData(char *buffer, int len) {
     lastTime = currentTime;
     for (int i = 0; i < TARGETS; i++) {
       memcpy(stateBytes, &buffer[4 + i * STATE_SIZE], STATE_SIZE);
-      printf("\nStata Bytes = %s", stateBytes);
+      printf("\nState Bytes = %s", stateBytes);
       reportTargetInfo(i, stateBytes);
     }
 }
 
-void readline(int readch, char *buffer, int len) {
+void readline(int readch, char *buffer, int length) {
     printf("\n******\tExecuting Readline FUNCTION\t*****\n");
-    static int pos;
+    static int position;
     printf("\nPosition = %d", pos);
     if (readch >= 0) {
-      if (pos < len - 1) {
-        buffer[pos++] = readch;
-        buffer[pos] = 0;
+      if (position < len - 1) {
+        buffer[position++] = readch;
+        buffer[position] = 0;
       } else {
         pos = 0;
       }
       printf("\nBuffer = ");
       for(int i=0; i<len; i++)
         printf("%c ", buffer[i]);
-      if ((buffer[pos - 2] == 0x55 && buffer[pos - 1] == 0xCC) && pos > 29) {
+      if ((buffer[position - 2] == 0x55 && buffer[position - 1] == 0xCC) and position>29) {
           handlePeriodicData(buffer, pos);
-          pos = 0;  // Reset position index ready for next time
+          position = 0;  // Reset position index ready for next time
       } 
-      
     }
     return;
 }
@@ -181,6 +180,10 @@ static void echo_task(void *arg)
 {
     /* Configure parameters of an UART driver,
      * communication pins and install the driver */
+    /*const char *init_cmds[] = {
+
+    }*/
+
     uart_config_t uart_config = {
         .baud_rate = 9600,
         .data_bits = UART_DATA_8_BITS,
