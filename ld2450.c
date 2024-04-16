@@ -42,6 +42,7 @@
 static const char *TAG = "UART TEST";
 
 #define BUF_SIZE (1024)
+#define STATE_SIZE 8
 
 uint32_t lastTime = millis();
 
@@ -168,7 +169,7 @@ void readline(int readch, char *buffer, int length) {
       printf("\nBuffer = ");
       for(int i=0; i<len; i++)
         printf("%c ", buffer[i]);
-      if ((buffer[position - 2] == 0x55 && buffer[position - 1] == 0xCC) and position>29) {
+      if ((buffer[position - 2] == 0x55 && buffer[position - 1] == 0xCC) && position>29) {
           handlePeriodicData(buffer, pos);
           position = 0;  // Reset position index ready for next time
       } 
