@@ -139,7 +139,7 @@ void handlePeriodicData(char *buffer, int length) {
       return;  // 4 frame start bytes + 2 length bytes + 1 data end byte + 1 crc byte + 4 frame end bytes
     if (buffer[0] != 0xAA || buffer[1] != 0xFF || buffer[2] != 0x03 || buffer[3] != 0x00)
       return;  // check 4 frame start bytes
-    if (buffer[len - 2] != 0x55 || buffer[len - 1] != 0xCC)
+    if (buffer[length - 2] != 0x55 || buffer[length - 1] != 0xCC)
       return;  //  data end=0x55, 0xcc
     char stateBytes[STATE_SIZE];
 
@@ -167,7 +167,7 @@ void readline(int readch, char *buffer, int length) {
         pos = 0;
       }
       printf("\nBuffer = ");
-      for(int i=0; i<len; i++)
+      for(int i=0; i<length; i++)
         printf("%c ", buffer[i]);
       if ((buffer[position - 2] == 0x55 && buffer[position - 1] == 0xCC) && position>29) {
           handlePeriodicData(buffer, pos);
