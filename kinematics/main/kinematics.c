@@ -36,9 +36,9 @@ void fast_forward(float meters){
 
 void reverse(float meters){
     mcpwm_set_signal_low(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_A);
-    mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, 75);
+    mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, 70);
     mcpwm_set_duty_type(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_OPR_B, MCPWM_DUTY_MODE_0);
-    float duration = meters*100 / tyre_circumference;
+    float duration = meters*100 / (tyre_circumference*0.57);
     vTaskDelay(pdMS_TO_TICKS(duration));
 }
 
