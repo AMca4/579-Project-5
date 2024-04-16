@@ -1,0 +1,17 @@
+{
+    "idf.portWin": "COM8",
+    "idf.adapterTargetName": "esp32",
+    "idf.openOcdConfigs": [
+        "board/esp32-bridge.cfg"
+    ],
+    "files.associations": {
+        "mcpwm.h": "c",
+        "mcpwm_reg.h": "c",
+        "kinematics.h": "c",
+        "gpio.h": "c",
+        "mcpwm_prelude.h": "c",
+        "chrono": "c",
+        "stdio.h": "c"
+    },
+    "idf.flashType": "UART"
+}
