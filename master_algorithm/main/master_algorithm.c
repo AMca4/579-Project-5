@@ -17,26 +17,30 @@ struct SensorData{
     int16_t x1, y1, x2, y2;
 };
 
+struct Deviation{
+    int16_t y, x;
+};
+
 struct SensorData get_measurements(){
     struct SensorData data;
-    data.us_distance_left = ultrasonic_scan(LEFT_TRIGGER, LEFT_ECHO);
-    data.us_distance_right = ultrasonic_scan(RIGHT_TRIGGER, RIGHT_ECHO);
-    int16_t x1, y1, x2, y2;
+    // data.us_distance_left = ultrasonic_scan(LEFT_TRIGGER, LEFT_ECHO);
+    // data.us_distance_right = ultrasonic_scan(RIGHT_TRIGGER, RIGHT_ECHO);
+    int16_t x1, y1;
     adxl345_read_acceleration(&x1, &y1);
-    vTaskDelay(pdMS_TO_TICKS(150)); 
-    adxl345_read_acceleration(&x2, &y2);
+    // vTaskDelay(pdMS_TO_TICKS(150)); 
+    // adxl345_read_acceleration(&x2, &y2);
     data.x1 = x1;
-    data.x2 = x2;
+    // data.x2 = x2;
     data.y1 = y1;
-    data.y2 = y2;
+    // data.y2 = y2;
     return data;
 };
 
 void initialisations(){
     // gpio_set_direction(MOTOR,GPIO_MODE_OUTPUT);
     // gpio_set_level(MOTOR,0); 
-    ultrasonic_initialisation(LEFT_TRIGGER, LEFT_ECHO);
-    ultrasonic_initialisation(RIGHT_TRIGGER, RIGHT_ECHO);
+    // ultrasonic_initialisation(LEFT_TRIGGER, LEFT_ECHO);
+    // ultrasonic_initialisation(RIGHT_TRIGGER, RIGHT_ECHO);
     i2c_master_init();
     adxl345_init();
     gpio_set_direction(LED, GPIO_MODE_OUTPUT);
@@ -47,30 +51,43 @@ void initialisations(){
 // }
 
 void main_app(void *pvParameters){
+    bool is_first = true;
     initialisations();
     while(true){
         struct SensorData data = get_measurements();
-        printf("left: %0.04f cm right: %0.04f cm\n", (data.us_distance_right*100), (data.us_distance_left*100));                  
+        // printf("left: %0.04f cm right: %0.04f cm\n", (data.us_distance_right*100), (data.us_distance_left*100));                  
         ////////// ACCELEROMETER ///////////
-        if (((data.x2-data.x1) > 30) | ((data.x1-data.x2) > 30 )) {
+        int16_t x2, y2;
+        if (!is_first){
+            if ((abs(x2-data.x1)) > 400) {
             gpio_set_level(LED, 1);
             vTaskDelay(pdMS_TO_TICKS(200));
             gpio_set_level(LED, 0);
+            }
+            else if((abs(y2-data.y1)) > 400){
+                gpio_set_level(LED, 1);
+                vTaskDelay(pdMS_TO_TICKS(50));
+                gpio_set_level(LED, 0);
+                vTaskDelay(pdMS_TO_TICKS(50));
+                gpio_set_level(LED, 1);
+                vTaskDelay(pdMS_TO_TICKS(50));
+                gpio_set_level(LED, 0);
+            }
         }
-        else if(((data.y2-data.y1) > 30) | ((data.y1-data.y2) > 30)){
-            gpio_set_level(LED, 1);
-            vTaskDelay(pdMS_TO_TICKS(50));
-            gpio_set_level(LED, 0);
-            vTaskDelay(pdMS_TO_TICKS(50));
-            gpio_set_level(LED, 1);
-            vTaskDelay(pdMS_TO_TICKS(50));
-            gpio_set_level(LED, 0);
+        else{
+            x2 = data.x1;
+            y2 = data.y1;
+            is_first = false;
         }
-        printf("X: %d, Y: %d\n", data.x2, data.y2);
+        struct Deviation deviation;
+        deviation.y = abs((y2 - data.y1));
+        deviation.x = abs((x2 - data.x1));
+        x2 = data.x1;
+        y2 = data.y1;
+        printf("X: %d, Y: %d\n", deviation.x, deviation.y);
         vTaskDelay(pdMS_TO_TICKS(100));
         //////////END OF ACCELEROMETER ///////////
-                         
-    }
+    }  
 }
 
 // void some_decision_algo_name(){

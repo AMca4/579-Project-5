@@ -9,7 +9,7 @@
         "ultrasonic.h": "c",
         "esp_err.h": "c"
     },
-    "idf.portWin": "COM7",
+    "idf.portWin": "COM6",
     "idf.flashType": "UART",
     "C_Cpp.errorSquiggles": "disabled"
 }
