@@ -1,0 +1,17 @@
+{
+    "idf.adapterTargetName": "esp32s3",
+    "idf.portWin": "COM10",
+    "idf.flashType": "UART",
+    "files.associations": {
+        "esp_wifi.h": "c",
+        "esp_http_server.h": "c",
+        "ledfunc.c": "cpp",
+        "cmd_i2ctools.h": "c",
+        "cmd_system.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled",
+    "C_Cpp.dimInactiveRegions": false,
+    "idf.openOcdConfigs": [
+        "board/esp32s3-bridge.cfg"
+    ]
+}
