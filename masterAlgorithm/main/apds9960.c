@@ -5,7 +5,8 @@
 #include "apds9960.h"
 #include "i2c_master.h"
 
-
+#define I2C_MASTER_SCL_IO    16    /*!< GPIO number for I2C master clock */
+#define I2C_MASTER_SDA_IO    15    /*!< GPIO number for I2C master data  */
 #define APDS9960_I2C_ADDR     0x39   /*!< I2C address for APDS9960 sensor */
 
 #define APDS9960_REG_ENABLE   0x80
@@ -56,8 +57,8 @@ void apds9960_read_rgb(uint16_t *r, uint16_t *g, uint16_t *b) {
 bool colourReading() {
 
     struct colourData reading;
-    i2c_scan(); // Scan the I2C bus before initializing the APDS9960 sensor
-    i2c_master_initOLD();
+    //i2c_scan(); // Scan the I2C bus before initializing the APDS9960 sensor
+    //i2c_master_initOLD();
     apds9960_init();
     uint16_t r, g, b;
     apds9960_read_rgb(&r, &g, &b);

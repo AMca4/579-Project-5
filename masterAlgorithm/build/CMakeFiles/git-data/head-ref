@@ -1,1 +1,4 @@
-503a65c743ce6668945f0900ab2523c86f6d9afd
+0000000000000000000000000000000000000000 350440094946c56cc3325e54dea8abcf88112300 Andrew McAllister <mcallistera4@gmail.com> 1707826907 +0000	branch: Created from HEAD
+350440094946c56cc3325e54dea8abcf88112300 dfec0dc5caac5985de403b6a957faba84330d6bb Andrew McAllister <mcallistera4@gmail.com> 1707827091 +0000	commit: Started Updating code to websocket server instead of http server
+dfec0dc5caac5985de403b6a957faba84330d6bb 503a65c743ce6668945f0900ab2523c86f6d9afd Andrew McAllister <mcallistera4@gmail.com> 1707991245 +0000	commit: Telemetry updataed to use webserve socket
+503a65c743ce6668945f0900ab2523c86f6d9afd 7f195b552696d965c316fbd925613d56253148f9 Andrew McAllister <mcallistera4@gmail.com> 1713423842 +0100	commit: Adding master Alg

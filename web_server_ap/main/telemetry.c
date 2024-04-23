@@ -256,6 +256,20 @@ body {\
 \
 <h1>Ignition Selection</h1>\
 \
+ <script>\
+        function sendStartMessage() {\
+            var xhr = new XMLHttpRequest();\
+            xhr.open(\"POST\", \"/message\", true);\
+            xhr.setRequestHeader(\"Content-Type\", \"text/plain\");\
+            xhr.send(\"Start\");\
+            xhr.onload = function () {\
+                if (xhr.status == 200) {\
+                    alert(\"Message sent successfully\");\
+                } else {\
+                    alert(\"Failed to send message\");\
+                }\
+            };\
+        }\
 <script>\
 function openNav() {\
   document.getElementById(\"mySidenav\").style.width = \"250px\";\
@@ -274,7 +288,7 @@ Live Telemetry Ignition\
 </button>\
 </form>\
 <form action=\"/killWebserver\">\
-<button type=\"submit\" value=\"Raw Ignition\">\
+<button type=\"submit\" value=\"Raw Ignition\" onclick=\"sendStartMessage();\" />\
 Raw Ignition\
 </button>\
 </form>\

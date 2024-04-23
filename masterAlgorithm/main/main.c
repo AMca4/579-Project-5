@@ -2,13 +2,14 @@
 #include "apds9960.h"
 #include "vl53l1.h"
 #include "i2c_master.h"
+#include "webServer.h"
 #include <string.h>
 
 
 #define LEFT_TRIGGER GPIO_NUM_5                                          // D5
-#define LEFT_ECHO GPIO_NUM_20                                            // D18
-#define RIGHT_TRIGGER GPIO_NUM_26                                        // D26
-#define RIGHT_ECHO GPIO_NUM_27                                           // D27
+#define LEFT_ECHO GPIO_NUM_6                                            // D18
+#define RIGHT_TRIGGER GPIO_NUM_15                                        // D26
+#define RIGHT_ECHO GPIO_NUM_16                                           // D27
 #define MOTOR GPIO_NUM_4                                                 // D4
 #define LED GPIO_NUM_2                                                   // LED @ D2
 
@@ -16,14 +17,16 @@
 #define detectionState 1 // Detected object and manoeuvre to the object
 #define objIDState 2 // Use infrareds to determine colour and either knock/avoid
 #define returnState 3 // Return to main path
+#define waitState 4 // Wait for start signal to be sent
 
 
 char State;
+bool ranFlag = 0;
 
 
 struct UltrasonicData{
-    uint16_t leftDist;
-    uint16_t rightDist;
+    float leftDist;
+    float rightDist;
 };
 
 struct APDSData{
@@ -38,7 +41,7 @@ struct TOFData{
 };
 
 struct DetectionData{
-    char direction; // Left, Right, Ahead
+    bool direction; // Left, Right, Ahead
     uint16_t distToTarget; // Distance to Target, Invalid if straight ahead
 };
 
@@ -46,16 +49,32 @@ void initialisations(){
     // gpio_set_direction(MOTOR,GPIO_MODE_OUTPUT);
     // gpio_set_level(MOTOR,0); 
     ultrasonic_initialisation(LEFT_TRIGGER, LEFT_ECHO);
-    //ultrasonic_initialisation(RIGHT_TRIGGER, RIGHT_ECHO);
+    ultrasonic_initialisation(RIGHT_TRIGGER, RIGHT_ECHO);
     i2c_master_initNew();
+    wifi_connection();
+    websocket_app_start();
     //adxl345_init();
-    initialiseTOF();
-    gpio_set_direction(LED, GPIO_MODE_OUTPUT);
+    //gpio_set_direction(LED, GPIO_MODE_OUTPUT);
+    vTaskDelay(pdMS_TO_TICKS(1000));
 }
 
 //--------------------------- STATE FUNCTIONS-------------------------------------//
 
 // --------------------------Search State Function----------------------------------
+
+void waitStatefunc(){
+    
+    bool signal = readFlag();
+
+    if(signal == true){
+        printf("\nStart Message Received");
+        State = searchState;
+    } else if(signal == false){
+        printf("\n Car waiting for Start Command");
+    }
+
+}
+
 
 struct DetectionData searchStatefunc(){
     // Get reading to wall and store
@@ -64,66 +83,42 @@ struct DetectionData searchStatefunc(){
     // Gather Data from Sensors until Detection is made
     // Switch State to detection state
 
-    printf("Entered First State: \n");
-
-    struct UltrasonicData initialReading;
-    struct UltrasonicData searchReading;
+    printf("\nStart Searching\n");
     struct DetectionData target;
-
-    initialReading.leftDist = ultrasonic_scan(LEFT_TRIGGER, LEFT_ECHO);
-    //initialReading.rightDist = ultrasonic_scan(RIGHT_TRIGGER,RIGHT_ECHO);
-    printf("Initial Wall Reading:");
-    printf("%d", initialReading.leftDist);
+    float wallReadingLeft = ultrasonic_scan(LEFT_TRIGGER, LEFT_ECHO);
+    float wallReadingRight = ultrasonic_scan(RIGHT_TRIGGER, RIGHT_ECHO);
+    printf("Initial Wall Readings:");
+    printf("%.2f", wallReadingLeft);
+    printf(",   ");
+    printf("%.2f", wallReadingRight);
 
 
     // Send forward drive PWM signal to motor
     while(State == searchState){
         
-        searchReading.leftDist = ultrasonic_scan(LEFT_TRIGGER, LEFT_ECHO);
-        //searchReading.rightDist = ultrasonic_scan(RIGHT_TRIGGER, RIGHT_ECHO);
-        printf("\n Detection Reading:");
-        printf("%u", searchReading.leftDist);
-        float minErrorReadingDist = 10;
-        float minDistLeft = 0.8*initialReading.leftDist;
-        if ((searchReading.leftDist < minDistLeft) & (searchReading.leftDist > minErrorReadingDist)){
-            // Stop Car Function
-                int validateTarget[10] = {0};
-                int valCount = 0;
-                for(int i=0;i<10;i++){
-                    
-                    float valDist = ultrasonic_scan(LEFT_TRIGGER,LEFT_ECHO);
-                    validateTarget[i] = valDist;
-                }
-
-                for(int i =0;i<10;i++){
-                    
-                    if((searchReading.leftDist < minDistLeft)&(searchReading.leftDist > minErrorReadingDist)){
-                        
-                        valCount++;
-
-                    }
-                    
-                }
-
-                if (valCount == 10){
-                    printf("Target Detected, at Distance:");
-                    printf("%u", searchReading.leftDist);
-                    target.direction = true;
-                    target.distToTarget = searchReading.leftDist;
-                    State = detectionState;
-                }
-
-        }
-        //else if (searchReading.rightDist < wallReading.rightDist) {
-        //    // Stop Car Function
-        //    target.direction = "Right";
-        //    target.distToTarget = searchReading.rightDist;
-        //    State = detectionState;
-        //}
+        float searchReadingLeft = ultrasonic_scan(LEFT_TRIGGER, LEFT_ECHO);
+        float searchReadingRight = ultrasonic_scan(RIGHT_TRIGGER, RIGHT_ECHO);
+        printf("\n Search Readings:");
+        printf("%.2f", searchReadingLeft);
+        printf(",   ");
+        printf("%.2f", searchReadingRight);
+        float minDistLeft = 0.6*wallReadingLeft;
+        float minDistRight = 0.6*wallReadingRight;
+        if (searchReadingLeft < minDistLeft){
+            printf("\n Detection Reading Left:");
+            printf("%.2f", searchReadingLeft);
+            target.direction = true; // True Indicates Left
+            target.distToTarget = searchReadingLeft;  
+            State = detectionState;         
+        } else if(searchReadingRight < minDistRight){          
+            printf("\n Detection Reading Right:");
+            printf("%.2f", searchReadingRight);
+            target.direction = false; // True Indicates Right
+            target.distToTarget = searchReadingRight;  
+            State = detectionState; 
+        }   
+        vTaskDelay(pdMS_TO_TICKS(500));
     }
-
-    // Add in sensor detection at front of the car incase of object ahead
-
     return target;
 
 }
@@ -132,7 +127,6 @@ struct DetectionData searchStatefunc(){
 
 void detectionStatefunc(struct DetectionData *targetData){
     
-    struct TOFData fwDist;
     // Turn Left or Right based on Detection Data
     // After Turn Advance distance to target
     // Switch to objIDState
@@ -145,17 +139,15 @@ void detectionStatefunc(struct DetectionData *targetData){
         printf("\n Car Turns Right \n");
     }
 
+    
+    if (ranFlag==0){initialiseTOF();}
+    else {ranFlag = 1;}
     // Advance distance to target function using target.distToTarget
-
     int distToTarget;
     distToTarget = tofReading();
-    
-    fwDist.forwardDistance = distToTarget;
 
-    printf("Advance to Target From Tof Reading:");
+    printf("\nFrom ToF, Advance to Target:");
     printf("%d", distToTarget);
-
-
     State = objIDState;
 
 }
@@ -168,8 +160,7 @@ void objIDStatefunc(){
     // Advance and knock over pin if black/do nothing if white
     // Switch to returnState 
     vTaskDelay(pdMS_TO_TICKS(5000));
-    //bool validTarget = colourReading();
-    bool validTarget = 1;
+    bool validTarget = colourReading();
 
     if(validTarget == 1){
         printf("\nSkittle is Black from colour reading so call func to knock over");
@@ -190,16 +181,16 @@ void returnStatefunc(struct DetectionData *Data){
 
     if (Data->direction == false){
 
-        printf("Perform Right Reversal Maneouvre");
+        printf("\nPerform Right Reversal Maneouvre");
 
     } else {
 
-        printf("Perform Left Reversal Maneouvre");
+        printf("\nPerform Left Reversal Maneouvre");
 
     }
 
-
-    //State = searchState;
+    printf("Return to Initial State");
+    State = searchState;
 }
 
 
@@ -210,11 +201,14 @@ void main_app(void *pvParameters){
     
     // Call initial Motion forward kinematics forward func
     printf("Starting Program: \n");
-    State = searchState;
+    State = waitState;
     
     while(true){
         switch (State)
         {
+        case waitState:
+            waitStatefunc();
+            break;
         case searchState:
             struct DetectionData data = searchStatefunc();
             break;       
