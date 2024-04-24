@@ -2,3 +2,5 @@ kinematics/
 master_algorithm/
 servo code files/.vscode/
 servo/build/
+obsolete/
+i2c_testing/build/
