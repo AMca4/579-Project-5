@@ -4,7 +4,14 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:/Espressif/**"
+                "C:/Espressif/**",
+                "C:/Espressif/frameworks/esp-idf-v5.2-2/components/freertos/FreeRTOS-Kernel/portable/xtensa/include/freertos",
+                "C:/Espressif/frameworks/esp-idf-v5.2-2/components/xtensa/esp32/include",
+                "C:/Espressif/frameworks/esp-idf-v5.2-2/components/xtensa/include",
+                "C:/Espressif/frameworks/esp-idf-v5.2-2/components/xtensa/include",
+                "C:/Espressif/frameworks/esp-idf-v5.2-2/components/riscv/include",
+                "C:/Espressif/frameworks/esp-idf-v5.2-2/components/riscv/include",
+                "C:/Espressif/frameworks/esp-idf-v5.2-2/components/esp_system/include"
             ],
             "defines": [
                 "_DEBUG",
@@ -12,7 +19,7 @@
                 "_UNICODE"
             ],
             "windowsSdkVersion": "10.0.22621.0",
-            "compilerPath": "cl.exe",
+            "compilerPath": "${config:idf.toolsPathWin}\\tools\\xtensa-esp-elf\\esp-13.2.0_20230928\\xtensa-esp-elf\\bin\\xtensa-esp32-elf-gcc.exe",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "windows-msvc-x64"
