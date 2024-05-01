@@ -1,18 +1,27 @@
 #include "include/ultrasonic.h"
 #include "apds9960.h"
 #include "vl53l1.h"
-#include "i2c_master.h"
+#include "i2c_top_level.h"
 #include "webServer.h"
 #include "kinematics.h"
 #include <string.h>
 
 
-#define LEFT_TRIGGER GPIO_NUM_5                                          // D5
-#define LEFT_ECHO GPIO_NUM_6                                            // D18
-#define RIGHT_TRIGGER GPIO_NUM_15                                        // D26
-#define RIGHT_ECHO GPIO_NUM_16                                           // D27
-#define MOTOR GPIO_NUM_4                                                 // D4
+#define LEFTSONIC_TRIGGER GPIO_NUM_15                                         // D15
+#define LEFTSONIC_ECHO GPIO_NUM_4                                             // D4
+#define RIGHTSONIC_TRIGGER GPIO_NUM_13                                        // D13
+#define RIGHTSONIC_ECHO GPIO_NUM_14                                           // D14
+#define FORWARD_MOTOR GPIO_NUM_32                                        // D32
+#define REVERSE_MOTOR GPIO_NUM_33                                        // D33
 #define LED GPIO_NUM_2                                                   // LED @ D2
+#define IR_RIGHT GPIO_NUM_25                                             // D25
+#define IR_LEFT GPIO_NUM_26                                              // D26
+#define TOF GPIO_NUM_2                                                   // D2
+#define ACCELEROMETER GPIO_NUM_0                                         // D0
+#define LEFT_COLOUR GPIO_NUM_1                                           // D1
+#define RIGHT_COLOUR GPIO_NUM_3                                          // D3 
+#define SERVO GPIO_NUM_5                                                 // D5
+
 
 #define searchState 0 // Driving forward looking for obj
 #define detectionState 1 // Detected object and manoeuvre to the object
@@ -49,8 +58,8 @@ struct DetectionData{
 void initialisations(){
     // gpio_set_direction(MOTOR,GPIO_MODE_OUTPUT);
     // gpio_set_level(MOTOR,0); 
-    ultrasonic_initialisation(LEFT_TRIGGER, LEFT_ECHO);
-    ultrasonic_initialisation(RIGHT_TRIGGER, RIGHT_ECHO);
+    ultrasonic_initialisation(LEFTSONIC_TRIGGER, LEFTSONIC_ECHO);
+    ultrasonic_initialisation(RIGHTSONIC_TRIGGER, RIGHTSONIC_ECHO);
     i2c_master_initNew();
     wifi_connection();
     websocket_app_start();
@@ -92,8 +101,8 @@ struct DetectionData searchStatefunc(){
     struct DetectionData target;
     vTaskDelay(pdMS_TO_TICKS(1000));
     if(readFlag() == false){State = waitState;}
-    float wallReadingLeft = ultrasonic_scan(LEFT_TRIGGER, LEFT_ECHO);
-    float wallReadingRight = ultrasonic_scan(RIGHT_TRIGGER, RIGHT_ECHO);
+    float wallReadingLeft = ultrasonic_scan(LEFTSONIC_TRIGGER, LEFTSONIC_TRIGGER);
+    float wallReadingRight = ultrasonic_scan(RIGHTSONIC_TRIGGER, RIGHTSONIC_ECHO);
     printf("Initial Wall Readings:");
     printf("%.2f", wallReadingLeft);
     printf(",   ");
@@ -103,8 +112,8 @@ struct DetectionData searchStatefunc(){
     // Send forward drive PWM signal to motor
     while(State == searchState){
         
-        float searchReadingLeft = ultrasonic_scan(LEFT_TRIGGER, LEFT_ECHO);
-        float searchReadingRight = ultrasonic_scan(RIGHT_TRIGGER, RIGHT_ECHO);
+        float searchReadingLeft = ultrasonic_scan(LEFTSONIC_TRIGGER, LEFTSONIC_TRIGGER);
+        float searchReadingRight = ultrasonic_scan(RIGHTSONIC_TRIGGER, RIGHTSONIC_ECHO);
         printf("\n Search Readings:");
         printf("%.2f", searchReadingLeft);
         printf(",   ");

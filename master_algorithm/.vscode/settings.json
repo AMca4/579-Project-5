@@ -5,6 +5,7 @@
     ],
     "idf.flashType": "UART",
     "files.associations": {
-        "i2c_master.h": "c"
+        "i2c_top_level.h": "c",
+        "string.h": "c"
     }
 }
