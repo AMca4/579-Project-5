@@ -4,6 +4,18 @@
 #define reverse_pin 32
 #define tyre_circumference 0.0895354
 
+#define LEDC_TIMER              LEDC_TIMER_0
+#define LEDC_MODE               LEDC_LOW_SPEED_MODE
+#define LEDC_OUTPUT_IO          (5)
+#define LEDC_CHANNEL            LEDC_CHANNEL_0
+#define LEDC_DUTY_RES           LEDC_TIMER_13_BIT
+#define LEDC_DUTY               (4096)
+#define LEDC_FREQUENCY          (50)
+
+
+
+void example_ledc_init(void);
+
 void motor_innit(){
     mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, forward_pin);
     mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0B, reverse_pin);
@@ -46,3 +58,61 @@ void brake(){
     gpio_set_level(forward_pin, 1);
     gpio_set_level(reverse_pin, 1);
 }
+
+void turnLeft(){
+        uint16_t dutyC = 650; // (Position 0)
+        //---Set and update duty cycle---//
+        ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, dutyC)); // Set Duty Cycle to incrementing value(LED ON)
+        ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL));     // Update Duty Cycle
+}
+void turnRight(){
+        uint16_t dutyC = 200; // (Position 0)
+        //---Set and update duty cycle---//
+        ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, dutyC)); // Set Duty Cycle to incrementing value(LED ON)
+        ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL));     // Update Duty Cycle
+}
+
+void turnStraight(){
+        uint16_t dutyC = 400; // (Position 0)
+        //---Set and update duty cycle---//
+        ESP_ERROR_CHECK(ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, dutyC)); // Set Duty Cycle to incrementing value(LED ON)
+        ESP_ERROR_CHECK(ledc_update_duty(LEDC_MODE, LEDC_CHANNEL));     // Update Duty Cycle
+}
+
+
+
+void example_ledc_init(void)
+{
+    ledc_timer_config_t ledc_timer = {
+        .speed_mode       = LEDC_MODE,
+        .duty_resolution  = LEDC_DUTY_RES,
+        .timer_num        = LEDC_TIMER,
+        .freq_hz          = LEDC_FREQUENCY,
+        .clk_cfg          = LEDC_AUTO_CLK
+    };
+    ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
+
+    ledc_channel_config_t ledc_channel = {
+        .speed_mode     = LEDC_MODE,
+        .channel        = LEDC_CHANNEL,
+        .timer_sel      = LEDC_TIMER,
+        .intr_type      = LEDC_INTR_DISABLE,
+        .gpio_num       = LEDC_OUTPUT_IO,
+        .duty           = 0,
+        .hpoint         = 0
+    };
+    ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
+}
+
+/*
+void app_main(void)
+{
+    example_ledc_init(); //Call PWM Function  
+    turnLeft();
+    vTaskDelay(pdMS_TO_TICKS(2000));
+    turnRight();
+    vTaskDelay(pdMS_TO_TICKS(2000));
+    turnStraight();
+
+}
+*/

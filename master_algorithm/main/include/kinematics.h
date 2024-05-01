@@ -11,6 +11,9 @@
 
 #include "include/kinematics.h"
 
+#include "esp_err.h"
+#include "driver/ledc.h"
+
 
 
 // struct pwm_details{
@@ -29,5 +32,13 @@ void fast_forward(float meters);
 void reverse(float meters);
 
 void brake();
+
+void turnRightForward();
+
+void turnLeftForward();
+
+void turnRightBackward();
+
+void turnLeftBackword();
 
 #endif
