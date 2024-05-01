@@ -2,4 +2,4 @@
 *.xlsx
 *.docx
 *.obsolete
-*/master_algorithm/build
+*master_algorithm/build

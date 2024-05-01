@@ -218,6 +218,7 @@ void main_app(void *pvParameters){
     
     while(true){
         if(readFlag() == false){State = waitState;}
+        int distanceCovered;
         switch (State)
         {
         case waitState:
@@ -229,7 +230,7 @@ void main_app(void *pvParameters){
             
             break;       
         case detectionState:
-            int distanceCovered = detectionStatefunc(&data);
+            distanceCovered = detectionStatefunc(&data);
             
             break;
         case objIDState:
