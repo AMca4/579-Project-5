@@ -6,6 +6,7 @@
     "idf.flashType": "UART",
     "files.associations": {
         "i2c_top_level.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "vl53l1.h": "c"
     }
 }

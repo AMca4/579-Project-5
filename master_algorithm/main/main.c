@@ -144,7 +144,7 @@ struct DetectionData searchStatefunc(){
 
 // ---------Detection State Function-------------------------------------
 
-int detectionStatefunc(struct DetectionData *targetData){
+float detectionStatefunc(struct DetectionData *targetData){
     
     // Turn Left or Right based on Detection Data
     // After Turn Advance distance to target
@@ -162,17 +162,16 @@ int detectionStatefunc(struct DetectionData *targetData){
     if (ranFlag==0){initialiseTOF();}
     else {ranFlag = 1;}
     // Advance distance to target function using target.distToTarget
-    int distToTarget;
-
     select_channel(TOF);
-    distToTarget = tofReading();
-    forward(distToTarget/1000); // Advance forward distance from tof, convert to meters
+    int distToTarget = tofReading();
+    forward(distToTarget*1000); // Advance forward distance from tof, convert to meters
     printf("\nFrom ToF, Advance to Target:");
     printf("%d", distToTarget);
     
     State = objIDState;
     if(readFlag() == false){State = waitState;}
-    
+    float distanceCovered = distToTarget - 50;
+    return distanceCovered;
 }
 
 // ----------------Object Identification State Function-----------------
@@ -188,7 +187,7 @@ void objIDStatefunc(){
     select_channel(RIGHT_COLOUR);
     bool validTargetB = colourReading();
 
-    if(validTargetA == 1 & validTargetB == 1){
+    if((validTargetA == 1) & (validTargetB == 1)){
         printf("\nSkittle is Black from colour reading so call func to knock over");
     } else {
         printf("\nSkittle is White so do nothing");
@@ -200,8 +199,7 @@ void objIDStatefunc(){
 
 // ----------------Return Car to Path State Function-------------------
 
-void returnStatefunc(struct DetectionData *Data, int revDistance){
-
+void returnStatefunc(struct DetectionData *Data, float revDistance){
     // Maneouvre back to intial path (Left or right reversal)
     reverse(revDistance/1000);
     // Switch to searchState
@@ -233,7 +231,7 @@ void main_app(void *pvParameters){
     
     while(true){
         if(readFlag() == false){State = waitState;}
-        int distanceCovered;
+        float distanceCovered;
         switch (State)
         {
         case waitState:
