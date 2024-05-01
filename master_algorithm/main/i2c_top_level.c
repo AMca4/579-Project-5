@@ -2,8 +2,8 @@
 #include "driver/i2c.h"
 
 
-#define I2C_MASTER_SCL_IO    19    /*!< GPIO number for I2C master clock */
-#define I2C_MASTER_SDA_IO    18    /*!< GPIO number for I2C master data  */
+#define I2C_MASTER_SCL_IO    22    /*!< GPIO number for I2C master clock */
+#define I2C_MASTER_SDA_IO    21    /*!< GPIO number for I2C master data  */
 #define I2C_MASTER_NUM       I2C_NUM_0  /*!< I2C port number for master dev */
 #define I2C_MASTER_FREQ_HZ    400000   /*!< I2C master clock frequency (400 kHz) */
 
@@ -22,17 +22,6 @@ void i2c_master_initNew()
     i2c_param_config(I2C_MASTER_NUM, &conf);
     //return i2c_driver_install(I2C_MASTER_NUM, conf.mode, I2C_MASTER_RX_BUF_DISABLE, I2C_MASTER_TX_BUF_DISABLE, 0);
     i2c_driver_install(I2C_MASTER_NUM, conf.mode, I2C_MASTER_RX_BUF_DISABLE, I2C_MASTER_TX_BUF_DISABLE, 0);
-}
-
-esp_err_t i2c_master_initOLD() {
-    i2c_config_t conf;
-    conf.mode = I2C_MODE_MASTER;
-    conf.sda_io_num = I2C_MASTER_SDA_IO;
-    conf.sda_pullup_en = GPIO_PULLUP_ENABLE;
-    conf.scl_io_num = I2C_MASTER_SCL_IO;
-    conf.scl_pullup_en = GPIO_PULLUP_ENABLE;
-    conf.master.clk_speed = I2C_MASTER_FREQ_HZ;
-    return i2c_param_config(I2C_MASTER_NUM, &conf);
 }
 
 void i2c_scan() {

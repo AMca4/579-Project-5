@@ -5,32 +5,28 @@
 #include "apds9960.h"
 #include "i2c_master.h"
 
-#define I2C_MASTER_SCL_IO    16    /*!< GPIO number for I2C master clock */
-#define I2C_MASTER_SDA_IO    15    /*!< GPIO number for I2C master data  */
+#define I2C_MASTER_SCL_IO    22    /*!< GPIO number for I2C master clock */
+#define I2C_MASTER_SDA_IO    21    /*!< GPIO number for I2C master data  */
 #define APDS9960_I2C_ADDR     0x39   /*!< I2C address for APDS9960 sensor */
 
-#define APDS9960_REG_ENABLE   0x80
-#define APDS9960_REG_ATIME    0x82
-#define APDS9960_REG_CONTROL  0x8F
-#define APDS9960_REG_STATUS   0x93
-#define APDS9960_REG_CDATAL   0x94
-#define APDS9960_REG_CDATAH   0x95
-#define APDS9960_REG_RDATAL   0x96
-#define APDS9960_REG_RDATAH   0x97
-#define APDS9960_REG_GDATAL   0x98
-#define APDS9960_REG_GDATAH   0x99
-#define APDS9960_REG_BDATAL   0x9A
-#define APDS9960_REG_BDATAH   0x9B
+#define APDS9960_REG_ENABLE   128
+#define APDS9960_REG_ATIME    200
+#define APDS9960_REG_CONTROL  143
+#define APDS9960_REG_STATUS   147
+#define APDS9960_REG_CDATAL   148
+#define APDS9960_REG_CDATAH   149
+#define APDS9960_REG_RDATAL   150
+#define APDS9960_REG_RDATAH   151
+#define APDS9960_REG_GDATAL   152
+#define APDS9960_REG_GDATAH   153
+#define APDS9960_REG_BDATAL   154
+#define APDS9960_REG_BDATAH   155
 
 struct colourData {
-
     uint16_t red, green, blue;
-
 };
 
 void apds9960_init() {
-
-
     // Enable the sensor
     //uint8_t enable = 0x01;
     uint8_t enable = 0x03;
@@ -55,10 +51,7 @@ void apds9960_read_rgb(uint16_t *r, uint16_t *g, uint16_t *b) {
 }
 
 bool colourReading() {
-
     struct colourData reading;
-    //i2c_scan(); // Scan the I2C bus before initializing the APDS9960 sensor
-    //i2c_master_initOLD();
     apds9960_init();
     uint16_t r, g, b;
     apds9960_read_rgb(&r, &g, &b);
