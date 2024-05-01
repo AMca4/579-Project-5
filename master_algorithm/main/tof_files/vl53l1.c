@@ -3,8 +3,8 @@
 #include <string.h>
 #include "VL53L1.h"
 
-#define I2C_MASTER_SCL_IO               19
-#define I2C_MASTER_SDA_IO               18
+#define I2C_MASTER_SCL_IO               22
+#define I2C_MASTER_SDA_IO               21
 #define I2C_MASTER_NUM                  I2C_NUM_0
 #define I2C_MASTER_TX_BUF_DISABLE       0
 #define I2C_MASTER_RX_BUF_DISABLE       0

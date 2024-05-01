@@ -15,12 +15,13 @@
 #define REVERSE_MOTOR GPIO_NUM_33                                        // D33
 #define LED GPIO_NUM_2                                                   // LED @ D2
 #define IR_RIGHT GPIO_NUM_25                                             // D25
-#define IR_LEFT GPIO_NUM_26                                              // D26
-#define TOF GPIO_NUM_2                                                   // D2
-#define ACCELEROMETER GPIO_NUM_0                                         // D0
-#define LEFT_COLOUR GPIO_NUM_1                                           // D1
-#define RIGHT_COLOUR GPIO_NUM_3                                          // D3 
+#define IR_LEFT GPIO_NUM_26                                              // D26                                                                                      // D0
 #define SERVO GPIO_NUM_5                                                 // D5
+
+#define TOF  2
+#define AXL  0
+#define LEFT_COLOUR  1
+#define RIGHT_COLOUR  3
 
 
 #define searchState 0 // Driving forward looking for obj
@@ -162,6 +163,8 @@ int detectionStatefunc(struct DetectionData *targetData){
     else {ranFlag = 1;}
     // Advance distance to target function using target.distToTarget
     int distToTarget;
+
+    select_channel(TOF);
     distToTarget = tofReading();
     forward(distToTarget/1000); // Advance forward distance from tof, convert to meters
     printf("\nFrom ToF, Advance to Target:");
@@ -180,9 +183,12 @@ void objIDStatefunc(){
     // Advance and knock over pin if black/do nothing if white
     // Switch to returnState 
     vTaskDelay(pdMS_TO_TICKS(5000));
-    bool validTarget = colourReading();
+    select_channel(LEFT_COLOUR);
+    bool validTargetA = colourReading();
+    select_channel(RIGHT_COLOUR);
+    bool validTargetB = colourReading();
 
-    if(validTarget == 1){
+    if(validTargetA == 1 & validTargetB == 1){
         printf("\nSkittle is Black from colour reading so call func to knock over");
     } else {
         printf("\nSkittle is White so do nothing");

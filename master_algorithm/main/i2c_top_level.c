@@ -91,3 +91,16 @@ esp_err_t i2c_master_sensor_read(uint8_t dev_addr, uint8_t reg_addr, uint8_t *da
     i2c_cmd_link_delete(cmd);
     return ret;
 }
+
+
+esp_err_t select_channel(uint8_t channel) {
+    uint8_t data = 1 << channel;
+    i2c_cmd_handle_t cmd = i2c_cmd_link_create();
+    i2c_master_start(cmd);
+    i2c_master_write_byte(cmd, PCA9546A_ADDR << 1 | I2C_MASTER_WRITE, true);
+    i2c_master_write(cmd, &data, 1, true); // Write data byte
+    i2c_master_stop(cmd);
+    esp_err_t ret = i2c_master_cmd_begin(I2C_MASTER_NUM, cmd, pdMS_TO_TICKS(100));
+    i2c_cmd_link_delete(cmd);
+    return ret;
+}
