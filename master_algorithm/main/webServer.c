@@ -67,8 +67,8 @@ void wifi_connection()
                                                         NULL);
      wifi_config_t wifi_config = {
         .ap = {
-            .ssid = "SKITTLES TELEMETRY G5",
-            .ssid_len = strlen("SKITTLES TELEMETRY G5"),
+            .ssid = "579 G5 Telemetry",
+            .ssid_len = strlen("579 G5 Telemetry"),
             .channel = 1,
             .authmode = WIFI_AUTH_OPEN,
             .max_connection = 4,
