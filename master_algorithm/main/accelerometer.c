@@ -1,8 +1,5 @@
-#include <stdio.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "driver/i2c.h"
-#include "driver/gpio.h"
+#include "include/accelerometer.h"
+
 
 #define I2C_MASTER_NUM I2C_NUM_0
 #define ADXL345_ADDR 0x53
