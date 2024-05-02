@@ -33,7 +33,7 @@
 
 char State;
 bool ranFlag = 0;
-int distanceCovered;
+float distanceCovered;
 
 struct UltrasonicData{
     float leftDist;
@@ -87,7 +87,7 @@ void waitStatefunc(){
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 
-    State = searchState;
+    //State = searchState;
 
 }
 
@@ -99,18 +99,17 @@ struct DetectionData searchStatefunc(){
     // Gather Data from Sensors until Detection is made
     // Switch State to detection state
     forward(1);
+    brake();
     printf("\nStart Searching\n");
-    vTaskDelay(pdMS_TO_TICKS(1000));
     struct DetectionData target;
-    vTaskDelay(pdMS_TO_TICKS(1000));
-    if(readFlag() == false){State = waitState;}
+    //if(readFlag() == false){State = waitState;}
     float wallReadingLeft = ultrasonic_scan(LEFTSONIC_TRIGGER, LEFTSONIC_ECHO);
     float wallReadingRight = ultrasonic_scan(RIGHTSONIC_TRIGGER, RIGHTSONIC_ECHO);
     printf("Initial Wall Readings:");
     printf("%.2f", wallReadingLeft);
     printf(",   ");
     printf("%.2f", wallReadingRight);
-    if(readFlag() == false){State = waitState;}
+    //if(readFlag() == false){State = waitState;}
 
     // Send forward drive PWM signal to motor
     while(State == searchState){
@@ -134,9 +133,9 @@ struct DetectionData searchStatefunc(){
             target.direction = false; // True Indicates Right
             target.distToTarget = searchReadingRight;  
             State = detectionState;
-            if(readFlag() == false){State = waitState;} 
+            //if(readFlag() == false){State = waitState;} 
         }   
-        if(readFlag() == false){State = waitState;}
+        //if(readFlag() == false){State = waitState;}
         vTaskDelay(pdMS_TO_TICKS(500));
     }
     return target;
@@ -145,7 +144,7 @@ struct DetectionData searchStatefunc(){
 
 // ---------Detection State Function-------------------------------------
 
-int detectionStatefunc(struct DetectionData *targetData){
+float detectionStatefunc(struct DetectionData *targetData){
     
     // Turn Left or Right based on Detection Data
     // After Turn Advance distance to target
@@ -153,30 +152,35 @@ int detectionStatefunc(struct DetectionData *targetData){
     if (targetData->direction == true){
         turnLeft();
         printf("\n Car Turns Left \n");
+        forward(0.5);
+        brake();
+        turnStraight();
     }
 
     else if (targetData->direction == false){
         turnRight();
         printf("\n Car Turns Right \n");
+        forward(0.5);
+        brake();
+        turnStraight();
     }
 
     
-    if (ranFlag==0){initialiseTOF();}
+    if (ranFlag==0){select_channel(TOF);initialiseTOF();}
     else {ranFlag = 1;}
     // Advance distance to target function using target.distToTarget
-    int distToTarget = 0;
+    float distToTarget = 0;
     select_channel(TOF);
     distToTarget = tofReading();
     forward(distToTarget/1000); // Advance forward distance from tof, convert to meters
     printf("\nFrom ToF, Advance to Target:");
-    printf("%d", distToTarget);
-    
+    printf("%.2f", distToTarget);
+    gpio_set_direction(GPIO_NUM_2,0);
     State = objIDState;
-    if(readFlag() == false){State = waitState;}
+    //if(readFlag() == false){State = waitState;}
 
     return distToTarget;
 
-    return 0;  
 }
 
 // ----------------Object Identification State Function-----------------
@@ -186,13 +190,13 @@ void objIDStatefunc(){
     // Read data from Infrared/colour sensor to determine colour
     // Advance and knock over pin if black/do nothing if white
     // Switch to returnState 
-    vTaskDelay(pdMS_TO_TICKS(5000));
+    // vTaskDelay(pdMS_TO_TICKS(5000));
     select_channel(LEFT_COLOUR);
     bool leftReading = colourReading();
     select_channel(RIGHT_COLOUR);
     bool rightReading = colourReading();
 
-    if (leftReading == 1 & rightReading == 1){
+    if ((leftReading == 1) && (rightReading == 1)){
         forward(0.5);
         printf("\nSkittle is Black from colour reading so call func to knock over");
         reverse(0.5);
@@ -201,12 +205,12 @@ void objIDStatefunc(){
     }
 
     State = returnState;
-    if(readFlag() == false){State = waitState;}
+    //if(readFlag() == false){State = waitState;}
 }
 
 // ----------------Return Car to Path State Function-------------------
 
-void returnStatefunc(struct DetectionData *Data, int revDistance){
+void returnStatefunc(struct DetectionData *Data, float revDistance){
 
     // Maneouvre back to intial path (Left or right reversal)
     reverse(revDistance/1000);
@@ -224,7 +228,7 @@ void returnStatefunc(struct DetectionData *Data, int revDistance){
 
     printf("Return to Initial State");
     State = searchState;
-    if(readFlag() == false){State = waitState;}
+    //if(readFlag() == false){State = waitState;}
 }
 
 
@@ -235,10 +239,12 @@ void main_app(void *pvParameters){
     bool startFlag;
     // Call initial Motion forward kinematics forward func
     printf("Starting Program: \n");
-    State = waitState;
+    State = searchState;
+    
     
     while(true){
-        if(readFlag() == false){State = waitState;}
+        //if(readFlag() == false){State = waitState;}
+        // State=searchState;
         switch (State)
         {
         case waitState:

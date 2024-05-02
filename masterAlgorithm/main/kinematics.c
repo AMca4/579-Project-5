@@ -1,6 +1,6 @@
 #include "include/kinematics.h"
 
-#define forward_pin 5
+#define forward_pin 33
 #define reverse_pin 18
 #define tyre_circumference 0.0895354
 
@@ -12,7 +12,7 @@
 #define LEDC_DUTY               (4096)
 #define LEDC_FREQUENCY          (50)
 
-void example_ledc_init(void);
+// void example_ledc_init(void);
 
 void motor_innit(){
     mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, forward_pin);

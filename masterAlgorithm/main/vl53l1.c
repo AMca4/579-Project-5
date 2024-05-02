@@ -3,13 +3,6 @@
 #include <string.h>
 #include "VL53L1.h"
 
-#define I2C_MASTER_SCL_IO               19
-#define I2C_MASTER_SDA_IO               18
-#define I2C_MASTER_NUM                  I2C_NUM_0
-#define I2C_MASTER_TX_BUF_DISABLE       0
-#define I2C_MASTER_RX_BUF_DISABLE       0
-#define I2C_MASTER_FREQ_HZ              400000
-
 
 VL53L1_Dev_t 	dev;
 VL53L1_DEV 		Dev 		= &dev;
@@ -20,7 +13,7 @@ void initialiseTOF(){
 	gpio_set_direction(GPIO_NUM_2, GPIO_MODE_OUTPUT);
 	VL53L1_Error 			Status;
 	Status = tofInit(Dev);
-	if (Status != VL53L1_ERROR_NONE)	tofOperationError(Status, "vl53l1_init");
+	if (Status != VL53L1_ERROR_NONE)	tofOperationError(esp_err_to_name(Status), "vl53l1_init");
 
     printf("TOF Init sensor Ok. \n");
 
@@ -147,7 +140,7 @@ int tofReading()
  	VL53L1_Error 			Status;
 
 
-    nvs_flash_init();
+    // nvs_flash_init();
     //f_i2c_init();
 
     //gpio_set_direction(GPIO_NUM_2, GPIO_MODE_OUTPUT);
@@ -157,7 +150,7 @@ int tofReading()
 
     //printf("TOF Init sensor Ok. \n");
 		
-	vTaskDelay(pdMS_TO_TICKS(200));				// Polling Time 
+	vTaskDelay(pdMS_TO_TICKS(100));				// Polling Time 
 
 	Blink = !Blink;
 	gpio_set_level(GPIO_NUM_2, Blink);
