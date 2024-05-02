@@ -5,6 +5,7 @@
 #include "webServer.h"
 #include "kinematics.h"
 #include <string.h>
+#include "accelerometer.h"
 
 
 #define LEFTSONIC_TRIGGER GPIO_NUM_15                                         // D15
