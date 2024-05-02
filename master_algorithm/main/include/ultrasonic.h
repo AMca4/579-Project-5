@@ -13,7 +13,6 @@
 
 
 float ultrasonic_scan(gpio_num_t TRIGGER, gpio_num_t ECHO);
-float ultrasonic_scan_multireading(gpio_num_t TRIGGER, gpio_num_t ECHO);
 esp_err_t ultrasonic_initialisation(gpio_num_t TRIGGER, gpio_num_t ECHO);
 
 #endif

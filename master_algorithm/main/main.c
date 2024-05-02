@@ -103,7 +103,7 @@ struct DetectionData searchStatefunc(){
     struct DetectionData target;
     vTaskDelay(pdMS_TO_TICKS(1000));
     if(readFlag() == false){State = waitState;}
-    float wallReadingLeft = ultrasonic_scan(LEFTSONIC_TRIGGER, LEFTSONIC_TRIGGER);
+    float wallReadingLeft = ultrasonic_scan(LEFTSONIC_TRIGGER, LEFTSONIC_ECHO);
     float wallReadingRight = ultrasonic_scan(RIGHTSONIC_TRIGGER, RIGHTSONIC_ECHO);
     printf("Initial Wall Readings:");
     printf("%.2f", wallReadingLeft);

@@ -19,7 +19,8 @@
         "vl53l1_core_support.h": "c",
         "vl53l1_api_strings.h": "c",
         "vl53l1_api_core.h": "c",
-        "vl53l1_def.h": "c"
+        "vl53l1_def.h": "c",
+        "ultrasonic.h": "c"
     },
-    "idf.portWin": "COM5"
+    "idf.portWin": "COM6"
 }
