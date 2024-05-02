@@ -7,7 +7,9 @@
     "files.associations": {
         "i2c_top_level.h": "c",
         "string.h": "c",
-        "vl53l1.h": "c"
+        "vl53l1.h": "c",
+        "freertos.h": "c",
+        "gpio.h": "c"
     },
     "idf.portWin": "COM5"
 }
