@@ -69,22 +69,3 @@ bool colourReading() {
 
 }   
 
-bool colourReading() {
-    struct colourData reading;
-    //i2c_master_initOLD();
-    apds9960_init();
-    uint16_t r, g, b;
-    apds9960_read_rgb(&r, &g, &b);
-    printf("RIGHT: R: %d, G: %d, B: %d\n", r, g, b);
-    vTaskDelay(100 / portTICK_PERIOD_MS);
-    reading.red = r;
-    reading.green = g;
-    reading.blue = b;
-    
-    if (reading.red + reading.blue + reading.green > 50){ // Target is not Black
-        return false;
-    } else{ // Target is assumed white
-        return true;
-    }
-
-}   

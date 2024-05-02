@@ -1,3 +1,2 @@
-idf_component_register(SRCS "kinematics.c" "webServer.c" "apds9960.c" "ultrasonic.c" "tof_files/vl53l1.c" "main.c"  "i2c_top_level.c"
+idf_component_register(SRCS "kinematics.c" "webServer.c" "apds9960.c" "ultrasonic.c" "main.c"  "i2c_top_level.c" "tof_files/vl53l1.c" "tof_files/vl53l1_api_calibration.c" "tof_files/vl53l1_api_core.c" "tof_files/vl53l1_api_debug.c" "tof_files/vl53l1_api_preset_modes.c" "tof_files/vl53l1_api_strings.c" "tof_files/vl53l1_api.c" "tof_files/vl53l1_core_support.c" "tof_files/vl53l1_core.c" "tof_files/vl53l1_error_strings.c" "tof_files/vl53l1_platform.c" "tof_files/vl53l1_register_funcs.c" "tof_files/vl53l1_silicon_core.c" "tof_files/vl53l1_wait.c"
                     INCLUDE_DIRS "." "include" "tof_files")
-
