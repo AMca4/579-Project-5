@@ -71,7 +71,7 @@
 #ifndef VL53L1_API_STRINGS_H_
 #define VL53L1_API_STRINGS_H_
 
-#include "vl53l1_def.h"
+#include "include/vl53l1_def.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -24,9 +24,9 @@
 
 #include "soc/gpio_struct.h"
 
-#include "vl53l1_platform.h"
-#include "vl53l1_platform_user_data.h"
-#include "vl53l1_api.h"
+#include "include/vl53l1_platform.h"
+#include "include/vl53l1_platform_user_data.h"
+#include "include/vl53l1_api.h"
 
 #define I2C_MASTER_SCL_IO               22
 #define I2C_MASTER_SDA_IO               21

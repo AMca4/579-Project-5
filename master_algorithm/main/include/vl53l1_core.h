@@ -69,8 +69,8 @@
 #ifndef _VL53L1_CORE_H_
 #define _VL53L1_CORE_H_
 
-#include "vl53l1_platform.h"
-#include "vl53l1_core_support.h"
+#include "include/vl53l1_platform.h"
+#include "include/vl53l1_core_support.h"
 
 #ifdef __cplusplus
 extern "C" {

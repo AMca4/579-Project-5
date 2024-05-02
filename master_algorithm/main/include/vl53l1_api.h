@@ -64,8 +64,8 @@
 #ifndef _VL53L1_API_H_
 #define _VL53L1_API_H_
 
-#include "vl53l1_api_strings.h"
-#include "vl53l1_api_core.h"
+#include "include/vl53l1_api_strings.h"
+#include "include/vl53l1_api_core.h"
 
 #ifdef __cplusplus
 extern "C"

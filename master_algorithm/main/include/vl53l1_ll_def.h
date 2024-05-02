@@ -71,12 +71,12 @@
 #ifndef _VL53L1_LL_DEF_H_
 #define _VL53L1_LL_DEF_H_
 
-#include "vl53l1_ll_device.h"
-#include "vl53l1_error_codes.h"
-#include "vl53l1_register_structs.h"
-#include "vl53l1_platform_user_config.h"
-#include "vl53l1_platform_user_defines.h"
-#include "vl53l1_error_exceptions.h"
+#include "include/vl53l1_ll_device.h"
+#include "include/vl53l1_error_codes.h"
+#include "include/vl53l1_register_structs.h"
+#include "include/vl53l1_platform_user_config.h"
+#include "include/vl53l1_platform_user_defines.h"
+#include "include/vl53l1_error_exceptions.h"
 
 #ifdef __cplusplus
 extern "C" {

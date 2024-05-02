@@ -44,8 +44,8 @@
 #include "driver/i2c.h"
 #include "soc/gpio_struct.h"
 
-#include "vl53l1_platform_log.h"
-#include "vl53l1_platform_user_data.h"
+#include "include/vl53l1_platform_log.h"
+#include "include/vl53l1_platform_user_data.h"
 //#include "vl53l1_api.h"
 
 //#define I2C_PORT                        I2C_NUM_1

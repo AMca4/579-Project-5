@@ -1,7 +1,7 @@
 #ifndef VL53L1_PLATFORM_H
 #define VL53L1_PLATFORM_H
 
-#include "vl53l1_api.h"
+#include "include/vl53l1_api.h"
 
 VL53L1_Error VL53L1_WaitDeviceBooted(VL53L1_Dev_t *pDevice);
 VL53L1_Error VL53L1_DataInit(VL53L1_Dev_t *pDevice);

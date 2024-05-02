@@ -9,7 +9,17 @@
         "string.h": "c",
         "vl53l1.h": "c",
         "freertos.h": "c",
-        "gpio.h": "c"
+        "gpio.h": "c",
+        "vl53l1_platform.h": "c",
+        "vl53l1_platform_user_data.h": "c",
+        "vl53l1_platform_user_config.h": "c",
+        "vl53l1_ll_device.h": "c",
+        "vl53l1_error_codes.h": "c",
+        "vl53l1_ll_def.h": "c",
+        "vl53l1_core_support.h": "c",
+        "vl53l1_api_strings.h": "c",
+        "vl53l1_api_core.h": "c",
+        "vl53l1_def.h": "c"
     },
     "idf.portWin": "COM5"
 }

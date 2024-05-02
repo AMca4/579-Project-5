@@ -70,7 +70,7 @@
 #ifndef VL53L1_ERROR_STRINGS_H_
 #define VL53L1_ERROR_STRINGS_H_
 
-#include "vl53l1_error_codes.h"
+#include "include/vl53l1_error_codes.h"
 
 #ifdef __cplusplus
 extern "C" {

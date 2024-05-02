@@ -32,12 +32,14 @@
 #define CHANNEL_FOR_TOF 2
 #define CHANNEL_FOR_COLOR_RIGHT 3
 
-
 void i2c_master_initNew();
-void i2c_scan();
-esp_err_t i2c_master_sensor_write(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data_wr, size_t size);
-esp_err_t i2c_master_sensor_read(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data_rd, size_t size);
-esp_err_t select_channel(uint8_t channel);
 
+void i2c_scan();
+
+esp_err_t i2c_master_sensor_write(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data_wr, size_t size);
+
+esp_err_t i2c_master_sensor_read(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data_rd, size_t size);
+
+esp_err_t select_channel(uint8_t channel);
 
 #endif

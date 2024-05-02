@@ -1,3 +1,6 @@
+#ifndef ACCELEROMETER_H
+#define ACCELEROMETER_H
+
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -11,3 +14,4 @@
 void adxl345_read_acceleration(int16_t *z, int16_t *y);
 void calibrate_accelerometer(int16_t *z_offset, int16_t *y_offset);
 
+#endif
