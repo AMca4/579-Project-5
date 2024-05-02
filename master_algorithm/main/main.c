@@ -8,8 +8,8 @@
 // #include "accelerometer.h"
 
 
-#define LEFTSONIC_TRIGGER GPIO_NUM_15                                         // D15
-#define LEFTSONIC_ECHO GPIO_NUM_4                                             // D4
+#define LEFTSONIC_TRIGGER GPIO_NUM_16                                         // D16
+#define LEFTSONIC_ECHO GPIO_NUM_17                                             // D17
 #define RIGHTSONIC_TRIGGER GPIO_NUM_13                                        // D13
 #define RIGHTSONIC_ECHO GPIO_NUM_14                                           // D14
 #define FORWARD_MOTOR GPIO_NUM_32                                        // D32
