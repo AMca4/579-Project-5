@@ -10,8 +10,8 @@
 
 #define LEFTSONIC_TRIGGER GPIO_NUM_16                                         // D16
 #define LEFTSONIC_ECHO GPIO_NUM_17                                             // D17
-#define RIGHTSONIC_TRIGGER GPIO_NUM_13                                        // D13
-#define RIGHTSONIC_ECHO GPIO_NUM_14                                           // D14
+#define RIGHTSONIC_TRIGGER GPIO_NUM_14                                        // D13
+#define RIGHTSONIC_ECHO GPIO_NUM_13                                           // D14
 #define FORWARD_MOTOR GPIO_NUM_32                                        // D32
 #define REVERSE_MOTOR GPIO_NUM_33                                        // D33
 #define LED GPIO_NUM_2                                                   // LED @ D2
@@ -63,8 +63,8 @@ void initialisations(){
     ultrasonic_initialisation(LEFTSONIC_TRIGGER, LEFTSONIC_ECHO);
     ultrasonic_initialisation(RIGHTSONIC_TRIGGER, RIGHTSONIC_ECHO);
     i2c_master_initNew();
-    wifi_connection();
-    websocket_app_start();
+    // wifi_connection();
+    // websocket_app_start();
     //adxl345_init();
     //gpio_set_direction(LED, GPIO_MODE_OUTPUT);
     vTaskDelay(pdMS_TO_TICKS(1000));
@@ -105,6 +105,7 @@ struct DetectionData searchStatefunc(){
     if(readFlag() == false){State = waitState;}
     float wallReadingLeft = ultrasonic_scan(LEFTSONIC_TRIGGER, LEFTSONIC_ECHO);
     float wallReadingRight = ultrasonic_scan(RIGHTSONIC_TRIGGER, RIGHTSONIC_ECHO);
+    // float wallReadingRight = 1;
     printf("Initial Wall Readings:");
     printf("%.2f", wallReadingLeft);
     printf(",   ");
@@ -113,7 +114,6 @@ struct DetectionData searchStatefunc(){
 
     // Send forward drive PWM signal to motor
     while(State == searchState){
-        
         float searchReadingLeft = ultrasonic_scan(LEFTSONIC_TRIGGER, LEFTSONIC_TRIGGER);
         float searchReadingRight = ultrasonic_scan(RIGHTSONIC_TRIGGER, RIGHTSONIC_ECHO);
         printf("\n Search Readings:");
@@ -231,7 +231,7 @@ void returnStatefunc(struct DetectionData *Data, float revDistance){
 
 // -------------------Main App Loop----------------------
 
-void main_app(){
+void app_main(){
     initialisations();
     bool startFlag;
     // Call initial Motion forward kinematics forward func
@@ -240,6 +240,7 @@ void main_app(){
     
     while(true){
         if(readFlag() == false){State = waitState;}
+        State = searchState;
         float distanceCovered=0;
         switch (State)
         {
@@ -268,11 +269,11 @@ void main_app(){
 
 
 
-void app_main(){
-    xTaskCreate(main_app, "components_measurement", configMINIMAL_STACK_SIZE * 10, NULL, 5, NULL);}
-                                                                    // create a task for freeRTOS to manage,
-                                                                    // identifier name "ultrasonic_scan", 
-                                                                    // stack size=3*16kB
-                                                                    // no pvParameters
-                                                                    // priority=5 
-                                                                    // task handle=null
+// void app_main(){
+//     xTaskCreate(main_app, "components_measurement", configMINIMAL_STACK_SIZE * 10, NULL, 5, NULL);}
+//                                                                     // create a task for freeRTOS to manage,
+//                                                                     // identifier name "ultrasonic_scan", 
+//                                                                     // stack size=3*16kB
+//                                                                     // no pvParameters
+//                                                                     // priority=5 
+//                                                                     // task handle=null
