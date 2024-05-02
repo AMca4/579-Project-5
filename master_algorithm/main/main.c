@@ -1,7 +1,7 @@
 #include "include/ultrasonic.h"
 #include "apds9960.h"
 #include "vl53l1.h"
-#include "i2c_top_level.h"
+#include "include/i2c_top_level.h"
 #include "webServer.h"
 #include "kinematics.h"
 #include <string.h>
@@ -231,7 +231,7 @@ void returnStatefunc(struct DetectionData *Data, float revDistance){
 
 // -------------------Main App Loop----------------------
 
-void main_app(){
+void app_main(){
     initialisations();
     bool startFlag;
     // Call initial Motion forward kinematics forward func

@@ -3,6 +3,10 @@
 
 #include <stdio.h>
 #include "esp_err.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "driver/i2c.h"
+#include "driver/gpio.h"
 
 #define I2C_MASTER_FREQ_HZ          400000 
 #define I2C_MASTER_TX_BUF_DISABLE   0  
