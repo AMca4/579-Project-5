@@ -230,7 +230,7 @@ void returnStatefunc(struct DetectionData *Data, float revDistance){
 
 // -------------------Main App Loop----------------------
 
-void main_app(void *pvParameters){
+void main_app(){
     initialisations();
     bool startFlag;
     // Call initial Motion forward kinematics forward func
@@ -239,7 +239,7 @@ void main_app(void *pvParameters){
     
     while(true){
         if(readFlag() == false){State = waitState;}
-        float distanceCovered;
+        float distanceCovered=0;
         switch (State)
         {
         case waitState:
@@ -265,13 +265,3 @@ void main_app(void *pvParameters){
     }
 }
 
-
-
-void app_main(){
-    xTaskCreate(main_app, "components_measurement", configMINIMAL_STACK_SIZE * 3, NULL, 5, NULL);}
-                                                                    // create a task for freeRTOS to manage,
-                                                                    // identifier name "ultrasonic_scan", 
-                                                                    // stack size=3*16kB
-                                                                    // no pvParameters
-                                                                    // priority=5 
-                                                                    // task handle=null
