@@ -41,4 +41,11 @@ float ultrasonic_scan(gpio_num_t TRIGGER, gpio_num_t ECHO){
     float distance = time_taken / ROUNDTRIP;                    // calculate distance (one way only)
     return distance;
 }
-
+void app_main(){
+    xTaskCreate(main_app, "components_measurement", configMINIMAL_STACK_SIZE * 3, NULL, 5, NULL);}
+                                                                    // create a task for freeRTOS to manage,
+                                                                    // identifier name "ultrasonic_scan", 
+                                                                    // stack size=3*16kB
+                                                                    // no pvParameters
+                                                                    // priority=5 
+                                                                    // task handle=null
