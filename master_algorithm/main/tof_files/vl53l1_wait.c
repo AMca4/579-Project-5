@@ -67,13 +67,13 @@
  */
 
 
-#include "vl53l1_ll_def.h"
-#include "vl53l1_ll_device.h"
-#include "vl53l1_platform.h"
-#include "vl53l1_core.h"
-#include "vl53l1_silicon_core.h"
-#include "vl53l1_wait.h"
-#include "vl53l1_register_settings.h"
+#include "include/vl53l1_ll_def.h"
+#include "include/vl53l1_ll_device.h"
+#include "include/vl53l1_platform.h"
+#include "include/vl53l1_core.h"
+#include "include/vl53l1_silicon_core.h"
+#include "include/vl53l1_wait.h"
+#include "include/vl53l1_register_settings.h"
 
 #define LOG_FUNCTION_START(fmt, ...) \
 	_LOG_FUNCTION_START(VL53L1_TRACE_MODULE_CORE, fmt, ##__VA_ARGS__)

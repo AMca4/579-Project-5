@@ -65,13 +65,13 @@
  * @brief  VL53L1 Register Function definitions
  */
 
-#include "vl53l1_ll_def.h"
-#include "vl53l1_platform.h"
-#include "vl53l1_platform_log.h"
-#include "vl53l1_core.h"
-#include "vl53l1_register_map.h"
-#include "vl53l1_register_structs.h"
-#include "vl53l1_register_funcs.h"
+#include "include/vl53l1_ll_def.h"
+#include "include/vl53l1_platform.h"
+#include "include/vl53l1_platform_log.h"
+#include "include/vl53l1_core.h"
+#include "include/vl53l1_register_map.h"
+#include "include/vl53l1_register_structs.h"
+#include "include/vl53l1_register_funcs.h"
 
 #define LOG_FUNCTION_START(fmt, ...) \
 	_LOG_FUNCTION_START(VL53L1_TRACE_MODULE_REGISTERS, fmt, ##__VA_ARGS__)

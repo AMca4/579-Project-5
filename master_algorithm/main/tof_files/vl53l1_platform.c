@@ -48,9 +48,9 @@
 
 #include "soc/gpio_struct.h"
 
-#include "vl53l1_platform.h"
-#include "vl53l1_platform_log.h"
-#include "vl53l1_api.h"
+#include "include/vl53l1_platform.h"
+#include "include/vl53l1_platform_log.h"
+#include "include/vl53l1_api.h"
 
 //#define I2C_PORT                        I2C_NUM_1
 #define WRITE_BIT                       I2C_MASTER_WRITE

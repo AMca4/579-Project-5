@@ -1,10 +1,6 @@
 #include "include/i2c_top_level.h"
 #include "driver/i2c.h"
 
-#define I2C_MASTER_SCL_IO    22    /*!< GPIO number for I2C master clock */
-#define I2C_MASTER_SDA_IO    21    /*!< GPIO number for I2C master data  */
-#define I2C_MASTER_NUM       I2C_NUM_0  /*!< I2C port number for master dev */
-#define I2C_MASTER_FREQ_HZ    400000   /*!< I2C master clock frequency (400 kHz) */
 
 
 

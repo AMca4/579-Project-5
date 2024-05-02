@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "VL53L1.h"
+#include "include/VL53L1.h"
 
 #define I2C_MASTER_SCL_IO               22
 #define I2C_MASTER_SDA_IO               21

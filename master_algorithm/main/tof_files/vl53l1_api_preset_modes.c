@@ -66,13 +66,13 @@
  * @brief EwokPlus25 API Preset Modes definitions
  */
 
-#include "vl53l1_ll_def.h"
-#include "vl53l1_platform_log.h"
-#include "vl53l1_register_structs.h"
-#include "vl53l1_register_settings.h"
-#include "vl53l1_core.h"
-#include "vl53l1_api_preset_modes.h"
-#include "vl53l1_tuning_parm_defaults.h"
+#include "include/vl53l1_ll_def.h"
+#include "include/vl53l1_platform_log.h"
+#include "include/vl53l1_register_structs.h"
+#include "include/vl53l1_register_settings.h"
+#include "include/vl53l1_core.h"
+#include "include/vl53l1_api_preset_modes.h"
+#include "include/vl53l1_tuning_parm_defaults.h"
 
 
 #define LOG_FUNCTION_START(fmt, ...) \

@@ -7,9 +7,6 @@
 #include "freertos/task.h"
 #include "driver/i2c.h"
 #include "driver/gpio.h"
-// #include "include/accelerometer.h"
-#include "include/apds9960.h"
-#include "include/vl53l1.h"
 
 
 #define I2C_MASTER_FREQ_HZ          400000 

@@ -2,7 +2,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/i2c.h"
-#include "apds9960.h"
+#include "include/apds9960.h"
 #include "i2c_top_level.h"
 
 #define I2C_MASTER_SCL_IO    22    /*!< GPIO number for I2C master clock */
@@ -49,7 +49,7 @@ void apds9960_read_rgb(uint16_t *r, uint16_t *g, uint16_t *b) {
     *b = (data[5] << 8) | data[4];
 }
 
-bool colourReading_left() {
+bool colourReading() {
     struct colourData reading;
     //i2c_master_initOLD();
     apds9960_init();
@@ -69,7 +69,7 @@ bool colourReading_left() {
 
 }   
 
-bool colourReading_right() {
+bool colourReading() {
     struct colourData reading;
     //i2c_master_initOLD();
     apds9960_init();
