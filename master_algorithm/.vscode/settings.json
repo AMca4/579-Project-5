@@ -22,5 +22,5 @@
         "vl53l1_def.h": "c",
         "ultrasonic.h": "c"
     },
-    "idf.portWin": "COM6"
+    "idf.portWin": "COM5"
 }

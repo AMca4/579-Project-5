@@ -1,30 +1,28 @@
-#include <string.h>
-#include "include/i2c_top_level.h"
 #include "include/ultrasonic.h"
-#include "include/apds9960.h"
-#include "include/vl53l1.h"
-#include "include/webServer.h"
-#include "include/kinematics.h"
-// #include "accelerometer.h"
+#include "apds9960.h"
+#include "vl53l1.h"
+#include "i2c_top_level.h"
+#include "webServer.h"
+#include "kinematics.h"
+#include <string.h>
+
 
 
 #define LEFTSONIC_TRIGGER GPIO_NUM_16                                         // D16
 #define LEFTSONIC_ECHO GPIO_NUM_17                                             // D17
-#define RIGHTSONIC_TRIGGER GPIO_NUM_13                                        // D13
-#define RIGHTSONIC_ECHO GPIO_NUM_14                                           // D14
-#define FORWARD_MOTOR GPIO_NUM_32                                        // D32
-#define REVERSE_MOTOR GPIO_NUM_33                                        // D33
+#define RIGHTSONIC_TRIGGER GPIO_NUM_25                                        // D13
+#define RIGHTSONIC_ECHO GPIO_NUM_26                                           // D14
+#define FORWARD_MOTOR GPIO_NUM_5                                        // D32
+#define REVERSE_MOTOR GPIO_NUM_18                                        // D33
 #define LED GPIO_NUM_2                                                   // LED @ D2
-#define IR_RIGHT GPIO_NUM_25                                             // D25
-#define IR_LEFT GPIO_NUM_26                                              // D26                                                                                      // D0
-#define SERVO GPIO_NUM_5                                                 // D5
+#define IR_RIGHT GPIO_NUM_39                                             // D25
+#define IR_LEFT GPIO_NUM_36                                              // D26                                                                                      // D0
+#define SERVO GPIO_NUM_33                                                 // D5
 
-
+#define TOF  2
 #define AXL  0
 #define LEFT_COLOUR  1
-#define TOF  2
-#define RIGHT_COLOUR  3
-
+#define RIGHT_COLOUR  3                                                // LED @ D2
 
 #define searchState 0 // Driving forward looking for obj
 #define detectionState 1 // Detected object and manoeuvre to the object
@@ -35,7 +33,7 @@
 
 char State;
 bool ranFlag = 0;
-
+int distanceCovered;
 
 struct UltrasonicData{
     float leftDist;
@@ -66,6 +64,8 @@ void initialisations(){
     i2c_master_initNew();
     wifi_connection();
     websocket_app_start();
+    example_ledc_init();
+    motor_innit();
     //adxl345_init();
     //gpio_set_direction(LED, GPIO_MODE_OUTPUT);
     vTaskDelay(pdMS_TO_TICKS(1000));
@@ -98,7 +98,7 @@ struct DetectionData searchStatefunc(){
     // Drive Forward
     // Gather Data from Sensors until Detection is made
     // Switch State to detection state
-
+    forward(1);
     printf("\nStart Searching\n");
     vTaskDelay(pdMS_TO_TICKS(1000));
     struct DetectionData target;
@@ -114,8 +114,7 @@ struct DetectionData searchStatefunc(){
 
     // Send forward drive PWM signal to motor
     while(State == searchState){
-        
-        float searchReadingLeft = ultrasonic_scan(LEFTSONIC_TRIGGER, LEFTSONIC_TRIGGER);
+        float searchReadingLeft = ultrasonic_scan(LEFTSONIC_TRIGGER, LEFTSONIC_ECHO);
         float searchReadingRight = ultrasonic_scan(RIGHTSONIC_TRIGGER, RIGHTSONIC_ECHO);
         printf("\n Search Readings:");
         printf("%.2f", searchReadingLeft);
@@ -146,20 +145,18 @@ struct DetectionData searchStatefunc(){
 
 // ---------Detection State Function-------------------------------------
 
-float detectionStatefunc(struct DetectionData *targetData){
+int detectionStatefunc(struct DetectionData *targetData){
     
     // Turn Left or Right based on Detection Data
     // After Turn Advance distance to target
     // Switch to objIDState
     if (targetData->direction == true){
         turnLeft();
-        forward(0.25);
         printf("\n Car Turns Left \n");
     }
 
     else if (targetData->direction == false){
         turnRight();
-        forward(0.25);
         printf("\n Car Turns Right \n");
     }
 
@@ -167,15 +164,19 @@ float detectionStatefunc(struct DetectionData *targetData){
     if (ranFlag==0){initialiseTOF();}
     else {ranFlag = 1;}
     // Advance distance to target function using target.distToTarget
+    int distToTarget = 0;
     select_channel(TOF);
-    int distToTarget = tofReading();
-    forward(distToTarget*1000); // Advance forward distance from tof, convert to meters
+    distToTarget = tofReading();
+    forward(distToTarget/1000); // Advance forward distance from tof, convert to meters
     printf("\nFrom ToF, Advance to Target:");
     printf("%d", distToTarget);
+    
     State = objIDState;
     if(readFlag() == false){State = waitState;}
-    float distanceCovered = distToTarget - 50;
-    return distanceCovered;
+
+    return distToTarget;
+
+    return 0;  
 }
 
 // ----------------Object Identification State Function-----------------
@@ -187,14 +188,14 @@ void objIDStatefunc(){
     // Switch to returnState 
     vTaskDelay(pdMS_TO_TICKS(5000));
     select_channel(LEFT_COLOUR);
-    bool validTargetA = colourReading();
+    bool leftReading = colourReading();
     select_channel(RIGHT_COLOUR);
-    bool validTargetB = colourReading();
+    bool rightReading = colourReading();
 
-    if((validTargetA == 1) & (validTargetB == 1)){
+    if (leftReading == 1 & rightReading == 1){
+        forward(0.5);
         printf("\nSkittle is Black from colour reading so call func to knock over");
-        forward(0.1);
-        reverse(0.1);
+        reverse(0.5);
     } else {
         printf("\nSkittle is White so do nothing");
     }
@@ -205,22 +206,19 @@ void objIDStatefunc(){
 
 // ----------------Return Car to Path State Function-------------------
 
-void returnStatefunc(struct DetectionData *Data, float revDistance){
+void returnStatefunc(struct DetectionData *Data, int revDistance){
+
     // Maneouvre back to intial path (Left or right reversal)
     reverse(revDistance/1000);
     // Switch to searchState
 
     if (Data->direction == false){
-        turnRight();
-        reverse(0.25);
+
         printf("\nPerform Right Reversal Maneouvre");
-        turnStraight();
 
     } else {
-        turnLeft();
-        reverse(0.25);
+
         printf("\nPerform Left Reversal Maneouvre");
-        turnStraight();
 
     }
 
@@ -232,7 +230,7 @@ void returnStatefunc(struct DetectionData *Data, float revDistance){
 
 // -------------------Main App Loop----------------------
 
-void main_app(){
+void main_app(void *pvParameters){
     initialisations();
     bool startFlag;
     // Call initial Motion forward kinematics forward func
@@ -241,7 +239,6 @@ void main_app(){
     
     while(true){
         if(readFlag() == false){State = waitState;}
-        float distanceCovered=0;
         switch (State)
         {
         case waitState:
