@@ -25,20 +25,28 @@ float ultrasonic_scan(gpio_num_t TRIGGER, gpio_num_t ECHO){
     if (gpio_get_level(ECHO))                                   // Previous ping isn't ended
         portEXIT_CRITICAL(&mux);                                // exit to avoid mismatch
     int64_t start = esp_timer_get_time();                       // get time in microseconds from boot time
-    while (!gpio_get_level(ECHO)){                              // Wait for echo
-        if (timeout_expired(start, PING_TIMEOUT))               // check for timeout
-            portEXIT_CRITICAL(&mux);                            // exit back to task sceduling due to ping time out
-    }
+    // while (!gpio_get_level(ECHO)){                              // Wait for echo
+    //     if (timeout_expired(start, PING_TIMEOUT))               // check for timeout
+    //         portEXIT_CRITICAL(&mux);                            // exit back to task sceduling due to ping time out
+    // }
     int64_t echo_rising_edge = esp_timer_get_time();            // get time in microseconds from boot time
     int64_t time = echo_rising_edge;                            // match time to echo_rising_edge (can only be >= to avoid getting negative numbers)
     while (gpio_get_level(ECHO)){                               // got echo, measuring
         time = esp_timer_get_time();
-        if (timeout_expired(echo_rising_edge, max_time_taken))  // check for timeout
-            portEXIT_CRITICAL(&mux);                            // exit back to task sceduling due to ping time out
+        // if (timeout_expired(echo_rising_edge, max_time_taken)){  // check for timeout
+        //     // portEXIT_CRITICAL(&mux);                            // exit back to task sceduling due to ping time out
+        //     time = 0;}
     }
     portEXIT_CRITICAL(&mux);                                    // done, exiting back to task scheduling
     uint32_t time_taken = time - echo_rising_edge;              // calculate the time it took for the pulse to travel distance*2
     float distance = time_taken / ROUNDTRIP;                    // calculate distance (one way only)
     return distance;
 }
-
+// void app_main(){
+//     xTaskCreate(main_app, "components_measurement", configMINIMAL_STACK_SIZE * 3, NULL, 5, NULL);}
+//                                                                     // create a task for freeRTOS to manage,
+//                                                                     // identifier name "ultrasonic_scan", 
+//                                                                     // stack size=3*16kB
+//                                                                     // no pvParameters
+//                                                                     // priority=5 
+//                                                                     // task handle=null

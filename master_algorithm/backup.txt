@@ -19,10 +19,9 @@
 #define IR_LEFT GPIO_NUM_26                                              // D26                                                                                      // D0
 #define SERVO GPIO_NUM_5                                                 // D5
 
-
+#define TOF  2
 #define AXL  0
 #define LEFT_COLOUR  1
-#define TOF  2
 #define RIGHT_COLOUR  3
 
 
