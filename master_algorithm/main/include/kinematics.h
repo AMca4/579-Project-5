@@ -33,12 +33,12 @@ void reverse(float meters);
 
 void brake();
 
-void turnRightForward();
+void turnRight();
 
-void turnLeftForward();
+void turnLeft();
 
-void turnRightBackward();
+void turnStraight();
 
-void turnLeftBackword();
+
 
 #endif

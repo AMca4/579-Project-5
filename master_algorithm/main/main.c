@@ -150,11 +150,14 @@ float detectionStatefunc(struct DetectionData *targetData){
     // After Turn Advance distance to target
     // Switch to objIDState
     if (targetData->direction == true){
-
+        turnLeft();
+        forward(0.25);
         printf("\n Car Turns Left \n");
     }
 
     else if (targetData->direction == false){
+        turnRight();
+        forward(0.25);
         printf("\n Car Turns Right \n");
     }
 
@@ -167,7 +170,6 @@ float detectionStatefunc(struct DetectionData *targetData){
     forward(distToTarget*1000); // Advance forward distance from tof, convert to meters
     printf("\nFrom ToF, Advance to Target:");
     printf("%d", distToTarget);
-    
     State = objIDState;
     if(readFlag() == false){State = waitState;}
     float distanceCovered = distToTarget - 50;
@@ -189,6 +191,8 @@ void objIDStatefunc(){
 
     if((validTargetA == 1) & (validTargetB == 1)){
         printf("\nSkittle is Black from colour reading so call func to knock over");
+        forward(0.1);
+        reverse(0.1);
     } else {
         printf("\nSkittle is White so do nothing");
     }
@@ -205,12 +209,16 @@ void returnStatefunc(struct DetectionData *Data, float revDistance){
     // Switch to searchState
 
     if (Data->direction == false){
-
+        turnRight();
+        reverse(0.25);
         printf("\nPerform Right Reversal Maneouvre");
+        turnStraight();
 
     } else {
-
+        turnLeft();
+        reverse(0.25);
         printf("\nPerform Left Reversal Maneouvre");
+        turnStraight();
 
     }
 
