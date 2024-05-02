@@ -72,6 +72,7 @@ void calibrate_accelerometer(int16_t *z_offset, int16_t *y_offset) {
     *y_offset = y_sum / num_samples;
 }
 
+/*
 void app_main() {
     i2c_master_init();
     gpio_set_direction(LED, GPIO_MODE_OUTPUT);
@@ -102,3 +103,4 @@ void app_main() {
         vTaskDelay(pdMS_TO_TICKS(400)); 
     }
 }
+*/
